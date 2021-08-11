@@ -1,12 +1,12 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'v8.5.24',
-    'version' => '8.5.24.0',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => NULL,
+    'reference' => 'aa384aa271588b335ef90e8bd996913d8990fe18',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -431,12 +431,12 @@
     ),
     'laravel/laravel' => 
     array (
-      'pretty_version' => 'v8.5.24',
-      'version' => '8.5.24.0',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => NULL,
+      'reference' => 'aa384aa271588b335ef90e8bd996913d8990fe18',
     ),
     'laravel/sail' => 
     array (
@@ -701,6 +701,24 @@
       ),
       'reference' => '191768ccd5c85513b4068bdbe99bb6390c7d54fb',
     ),
+    'prettus/l5-repository' => 
+    array (
+      'pretty_version' => '2.7.6',
+      'version' => '2.7.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2bd56801c78becf6a26b0d795312d879e55730cd',
+    ),
+    'prettus/laravel-validation' => 
+    array (
+      'pretty_version' => '1.3.0',
+      'version' => '1.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'cce3c273c9d44f77de031dc4dedd261ab936c497',
+    ),
     'psr/container' => 
     array (
       'pretty_version' => '1.1.1',
@@ -794,8 +812,8 @@
     array (
       'provided' => 
       array (
-        0 => '1.0|2.0',
-        1 => '1.0.0',
+        0 => '1.0.0',
+        1 => '1.0|2.0',
       ),
     ),
     'psr/simple-cache' => 
