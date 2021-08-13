@@ -36,6 +36,7 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
+        'ab9b68c5b1def6f80e89be13eb0a4be3' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -86,6 +87,8 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
             'Symfony\\Component\\ErrorHandler\\' => 31,
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
+            'Spatie\\Fractalistic\\' => 20,
+            'Spatie\\Fractal\\' => 15,
         ),
         'R' => 
         array (
@@ -315,6 +318,14 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
+        'Spatie\\Fractalistic\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/fractalistic/src',
+        ),
+        'Spatie\\Fractal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/laravel-fractal/src',
+        ),
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
@@ -527,9 +538,18 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Constants\\BlogConstants' => __DIR__ . '/../..' . '/app/Constants/BlogConstants.php',
+        'App\\Constants\\UserConstants' => __DIR__ . '/../..' . '/app/Constants/UserConstants.php',
+        'App\\Exceptions\\BaseException' => __DIR__ . '/../..' . '/app/Exceptions/BaseException.php',
         'App\\Exceptions\\CreateResourceException' => __DIR__ . '/../..' . '/app/Exceptions/CreateResourceException.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
-        'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
+        'App\\Exceptions\\ResourceNotFoundException' => __DIR__ . '/../..' . '/app/Exceptions/ResourceNotFoundException.php',
+        'App\\Exceptions\\UpdateResourceException' => __DIR__ . '/../..' . '/app/Exceptions/UpdateResourceException.php',
+        'App\\Http\\Controllers\\Authentication\\AuthenticationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Authentication/AuthenticationController.php',
+        'App\\Http\\Controllers\\BaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/BaseController.php',
+        'App\\Http\\Controllers\\Blog\\BlogController' => __DIR__ . '/../..' . '/app/Http/Controllers/Blog/BlogController.php',
+        'App\\Http\\Controllers\\Comment\\CommentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Comment/CommentController.php',
+        'App\\Http\\Controllers\\User\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -539,17 +559,27 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
-        'App\\Http\\Requests\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/LoginRequest.php',
-        'App\\Http\\Requests\\RegisterRequest' => __DIR__ . '/../..' . '/app/Http/Requests/RegisterRequest.php',
+        'App\\Http\\Requests\\Authentication\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Authentication/LoginRequest.php',
+        'App\\Http\\Requests\\BaseRequest' => __DIR__ . '/../..' . '/app/Http/Requests/BaseRequest.php',
+        'App\\Http\\Requests\\User\\RegisterRequest' => __DIR__ . '/../..' . '/app/Http/Requests/User/RegisterRequest.php',
+        'App\\Models\\Blog' => __DIR__ . '/../..' . '/app/Models/Blog.php',
+        'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
+        'App\\Models\\Comment' => __DIR__ . '/../..' . '/app/Models/Comment.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
-        'App\\Repositories\\UserRepository' => __DIR__ . '/../..' . '/app/Repositories/UserRepository.php',
+        'App\\Repositories\\BaseRepository' => __DIR__ . '/../..' . '/app/Repositories/BaseRepository.php',
+        'App\\Repositories\\Blog\\BlogRepository' => __DIR__ . '/../..' . '/app/Repositories/Blog/BlogRepository.php',
         'App\\Services\\BaseService' => __DIR__ . '/../..' . '/app/Services/BaseService.php',
+        'App\\Services\\Blog\\BlogService' => __DIR__ . '/../..' . '/app/Services/Blog/BlogService.php',
         'App\\Services\\User\\UserService' => __DIR__ . '/../..' . '/app/Services/User/UserService.php',
+        'App\\Traits\\Blog\\BlogCriteriaMethods' => __DIR__ . '/../..' . '/app/Traits/Blog/BlogCriteriaMethods.php',
+        'App\\Traits\\HasCriteriaParams' => __DIR__ . '/../..' . '/app/Traits/HasCriteriaParams.php',
+        'App\\Transformers\\BlogTransformer' => __DIR__ . '/../..' . '/app/Transformers/BlogTransformer.php',
+        'App\\Transformers\\CommentTransformer' => __DIR__ . '/../..' . '/app/Transformers/CommentTransformer.php',
         'App\\Transformers\\UserTransformer' => __DIR__ . '/../..' . '/app/Transformers/UserTransformer.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
@@ -4614,6 +4644,15 @@ class ComposerStaticInitec583c3796f58ad7ad1bc2e67bb27842
         'SebastianBergmann\\Type\\UnknownType' => __DIR__ . '/..' . '/sebastian/type/src/UnknownType.php',
         'SebastianBergmann\\Type\\VoidType' => __DIR__ . '/..' . '/sebastian/type/src/VoidType.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'Spatie\\Fractal\\Console\\Commands\\TransformerMakeCommand' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/Console/Commands/TransformerMakeCommand.php',
+        'Spatie\\Fractal\\Facades\\Fractal' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/Facades/Fractal.php',
+        'Spatie\\Fractal\\Fractal' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/Fractal.php',
+        'Spatie\\Fractal\\FractalFacade' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/FractalFacade.php',
+        'Spatie\\Fractal\\FractalServiceProvider' => __DIR__ . '/..' . '/spatie/laravel-fractal/src/FractalServiceProvider.php',
+        'Spatie\\Fractalistic\\ArraySerializer' => __DIR__ . '/..' . '/spatie/fractalistic/src/ArraySerializer.php',
+        'Spatie\\Fractalistic\\Exceptions\\InvalidTransformation' => __DIR__ . '/..' . '/spatie/fractalistic/src/Exceptions/InvalidTransformation.php',
+        'Spatie\\Fractalistic\\Exceptions\\NoTransformerSpecified' => __DIR__ . '/..' . '/spatie/fractalistic/src/Exceptions/NoTransformerSpecified.php',
+        'Spatie\\Fractalistic\\Fractal' => __DIR__ . '/..' . '/spatie/fractalistic/src/Fractal.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\Attribute\\AsCommand' => __DIR__ . '/..' . '/symfony/console/Attribute/AsCommand.php',
