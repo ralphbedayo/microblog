@@ -9,6 +9,7 @@ use App\Repositories\User\UserRepository;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class UserService extends BaseService
 {
@@ -28,6 +29,7 @@ class UserService extends BaseService
     public function createUser(array $aData)
     {
         $aData['password'] = Hash::make($aData['password']);
+        $aData['api_token'] = Str::random(32);
 
         try {
             return $this->oRepository->create($aData);

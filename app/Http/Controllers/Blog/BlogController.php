@@ -12,6 +12,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Blog\BlogService;
 use App\Transformers\BlogTransformer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class BlogController extends BaseController

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Authentication\AuthenticationController;
-use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\View\ViewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,15 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/login', function () {
-    return view('login');
-});
+Route::get('/login', [AuthenticationController::class, 'view']);
+Route::get('/register', [AuthenticationController::class, 'viewRegister']);
 
 Route::post('/login', [AuthenticationController::class, 'login']);
+Route::post('/register', [AuthenticationController::class, 'register']);
+
+
 Route::get('/logout', [AuthenticationController::class, 'logout']);
 Route::get('/me', [AuthenticationController::class, 'user']);
 
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [ViewController::class, 'view']);

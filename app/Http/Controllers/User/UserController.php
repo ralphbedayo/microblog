@@ -11,7 +11,7 @@ use App\Transformers\UserTransformer;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends BaseController
 {
@@ -28,17 +28,15 @@ class UserController extends BaseController
     }
 
     /**
-     * @param RegisterRequest $oRequest
      * @return mixed
      * @throws CreateResourceException
+     * @throws ValidationException
      */
-    public function store(RegisterRequest $oRequest)
+    public function store()
     {
-        $aFormData = $oRequest->all(UserConstants::SAVE_USER_PARAMS);
+        $aFormData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
 
         $oUserData = $this->oUserService->createUser($aFormData);
-
-        Auth::login($oUserData);
 
         return $this->oUserTransformer->transform($oUserData);
     }

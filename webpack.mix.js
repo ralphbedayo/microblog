@@ -18,6 +18,8 @@ mix.options({
 
 mix.webpackConfig(config);
 
-mix.js('resources/js/app.js', 'public/js').vue()
+mix.js('resources/js/app.js', 'public/js')
+    .vue()
+    .extract(['vue'])
     .sass('resources/sass/app.scss', 'public/css')
     .sourceMaps();
