@@ -33,10 +33,7 @@ class BlogController extends BaseController
      */
     public function index()
     {
-        DB::enableQueryLog();
         $oResponseData = $this->oBlogService->getAllBlog();
-
-        logger(DB::getQueryLog());
 
         return $this->transform($oResponseData, BlogTransformer::class);
     }

@@ -103,9 +103,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="row mt-5">
+                    <div class="d-flex justify-content-end">
+                        <div>
+                            <button class="btn btn-outline-primary" v-on:click="prevPage" :disabled="this.iPage === 1"> <</button>
+                            <span class="mx-1">Page {{ this.iPage}} out of {{ this.iTotalPage}}</span>
+                            <button class="btn btn-outline-primary" v-on:click="nextPage" :disabled="this.iPage === this.iTotalPage"> ></button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
-            <div class="row mt-5">
+            <div class="row mt-3">
                 <div class="blog-table border-top border-1 border-secondary">
                     <div class="row blog-row d-flex justify-content-around">
                         <blog-item class_string="col-6 col-sm-3" v-for="(oBlogItem, mKey) in oBlogItems"
@@ -137,6 +147,7 @@
                 oCategories: {},
                 iLimit: 10,
                 iPage: 1,
+                iTotalPage: 1,
                 oSearchParams: {},
                 oSearchFieldOptions: {
                     'title': 'Title',
@@ -187,7 +198,10 @@
                 let oPagination = {page: this.iPage, limit: this.iLimit};
                 sL5SearchString += this.setCategorySearchParam();
 
-                this.oBlogItems = await Blog.fetch({search: sL5SearchString, ...oSortAndOrderParam, ...oPagination});
+                let oResponse = await Blog.fetch({search: sL5SearchString, ...oSortAndOrderParam, ...oPagination});
+                this.oBlogItems = oResponse.data;
+                this.iPage = oResponse.meta.pagination.current_page;
+                this.iTotalPage = oResponse.meta.pagination.total_pages;
             },
             setSearchFieldParam() {
                 if (this.sSearchField.length === 0 || this.sSearchValue.length === 0) {
@@ -207,8 +221,15 @@
                     }
                 }
 
-
                 return 'category_id:' + sCategoryIdSearch.slice(0, -1);
+            },
+            prevPage() {
+                this.iPage -= 1;
+                this.search();
+            },
+            nextPage() {
+                this.iPage += 1;
+                this.search();
             }
         },
         async beforeCreate() {

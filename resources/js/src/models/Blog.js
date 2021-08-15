@@ -32,13 +32,11 @@ export default class Blog extends Model {
 
         oParams['searchJoin'] = 'and';
 
-        await this.api().get('', {params: oParams});
+        let oResult = await this.api().get('', {params: oParams});
 
         oParams.orderBy = this.convertOrderByField(oParams.orderBy);
 
-        console.log(oParams.orderBy);
-
-        return this.query().orderBy(oParams.orderBy, oParams.sortedBy).all();
+        return {data:  this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
     }
 
 
