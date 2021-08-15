@@ -70,10 +70,10 @@ class CommentController extends BaseController
 
         return $this->accepted([
             'Deleted Comment successfully.'
-        ]);
+        ], 200);
     }
 
-    public function index($iId)
+    public function index()
     {
 
     }

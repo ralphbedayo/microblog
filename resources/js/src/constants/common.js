@@ -7,6 +7,8 @@ export const USER_TYPES = [
 
 export const DATE_TIME_FORMAT = 'MMMM DD YYYY [at] h:mm a';
 
+export const DELETE_RESOURCE_CONFIRM_MESSAGE = 'Are you sure?';
+
 
 export const ORDER_FIELD_CONVERSION = {
     'user:author_id|name' : 'author_name',

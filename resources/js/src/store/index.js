@@ -15,6 +15,7 @@ const database = new VuexORM.Database();
 database.register(Blog);
 database.register(User);
 database.register(Category);
+
 const store = new Vuex.Store({
     plugins: [VuexORM.install(database)],
     state: {
@@ -30,5 +31,7 @@ const store = new Vuex.Store({
         }
     }
 });
+
+export const namespaced = true;
 
 export default store;

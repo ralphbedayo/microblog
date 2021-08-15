@@ -106,6 +106,6 @@ class BlogController extends BaseController
 
         return $this->accepted([
             'Deleted Blog successfully.'
-        ]);
+        ], 200);
     }
 }

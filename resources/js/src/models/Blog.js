@@ -18,6 +18,7 @@ export default class Blog extends Model {
             id: this.number(0),
             title: this.string(''),
             content: this.string(''),
+            comments: this.attr(null),
             category: this.string(''),
             author: this.attr(null),
             author_name: this.string(''),
@@ -36,16 +37,17 @@ export default class Blog extends Model {
 
         oParams.orderBy = this.convertOrderByField(oParams.orderBy);
 
-        return {data:  this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
+        return {data: this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
     }
 
 
-    static async fetchById(iId, bForced = false, oParams = {}) {
+    static async fetchById(iId, oParams = {include: 'comments'}) {
         let iBlogId = parseInt(iId);
 
-        if (bForced || !this.find(iBlogId)) {
-            await this.api().get('/' + iId, {params: {...oParams}});
-        }
+        // deleteAll to refresh vuex database
+        this.deleteAll();
+
+        await this.api().get('/' + iId, {params: {...oParams}});
 
         return this.query().whereId(iBlogId).withAllRecursive().first();
     }

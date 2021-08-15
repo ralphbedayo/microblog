@@ -37,10 +37,10 @@ class BlogFactory extends Factory
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterCreating(function (Blog $blog) {
-            Comment::factory()->count(5)->specificBlog((int)$blog->id);
-        });
-    }
+//    public function configure()
+//    {
+//        return $this->afterCreating(function (Blog $blog) {
+//            Comment::factory()->count(5)->specificBlog((int)$blog->id);
+//        });
+//    }
 }

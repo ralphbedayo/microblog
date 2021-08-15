@@ -2,11 +2,11 @@
     <div>
         <nav class="navbar navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <router-link class="navbar-brand" to="/">
                     <span class="text-lg text-white fw-bold me-auto">
                         Blog Spotter
                     </span>
-                </a>
+                </router-link>
                 <a href="/logout" class="btn btn-outline-light ms-auto">
                     Logout
                 </a>
