@@ -19,8 +19,21 @@
                 <div class="row">
                     <p> {{ this.oBlogItem.content}}</p>
                 </div>
+
+                <div class="row mt-2 ">
+                    <div class="d-flex justify-content-end">
+                        <div v-if="oAuthUser.id === this.oBlogItem.author_id">
+                            <router-link class="btn btn-sm btn-outline-primary"
+                                         :to="'/blog/' + this.oBlogItem.id + '/edit'"> Edit
+                            </router-link>
+                            <button class="btn btn-sm btn-danger mx-1"
+                                    v-on:click="deleteBlog()"> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row mt-5 border-top border-1 border-secondary comment-section">
+            <div class="row mt-3 border-top border-1 border-secondary comment-section">
                 <div class="col-8 mt-3">
                     <div class="row">
                         <h3 class="px-0">Comments</h3>
@@ -94,7 +107,7 @@
 <script>
 
     import User from "../models/User";
-    import {ADMIN_USER_TYPE, DATE_TIME_FORMAT, DELETE_RESOURCE_CONFIRM_MESSAGE} from "../constants/common";
+    import {ADMIN_USER_TYPE, DATE_TIME_FORMAT, DELETE_RESOURCE_CONFIRM_MESSAGE, OK_STATUS} from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import Blog from "../models/Blog";
     import Comment from "../models/Comment";
@@ -123,7 +136,7 @@
 
                 let iResponseCode = await Comment.createComment(oData);
 
-                if (iResponseCode === 200) {
+                if (iResponseCode === OK_STATUS) {
                     this.oBlogItem = await Blog.fetchById(this.iBlogId);
                     this.sCommentContent = '';
                 }
@@ -135,7 +148,7 @@
 
                 let iResponseCode = await Comment.deleteComment(iId);
 
-                if (iResponseCode === 200) {
+                if (iResponseCode === OK_STATUS) {
                     this.oBlogItem = await Blog.fetchById(this.iBlogId);
                     this.sCommentContent = '';
                 }
@@ -153,9 +166,20 @@
 
                 let iResponseCode = await Comment.updateComment(iId, {content: this.sEditCommentContent});
 
-                if (iResponseCode === 200) {
+                if (iResponseCode === OK_STATUS) {
                     this.cancelEdit();
                     this.oBlogItem = await Blog.fetchById(this.iBlogId);
+                }
+            },
+            async deleteBlog() {
+                if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
+                    return;
+                }
+
+                let iResponseCode = await Blog.deleteBlog(this.oBlogItem.id);
+
+                if (iResponseCode === OK_STATUS) {
+                    await this.$router.push({path: '/'});
                 }
             }
         },

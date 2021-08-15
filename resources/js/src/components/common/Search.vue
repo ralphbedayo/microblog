@@ -165,6 +165,9 @@
 
                 return 'category_id:' + sCategoryIdSearch.slice(0, -1);
             },
+        },
+        beforeMount() {
+            this.emitSearch();
         }
     };
 

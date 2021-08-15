@@ -26,7 +26,10 @@
                     ></search>
                 </div>
                 <div class="row mt-5">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <router-link to="/create" class="btn btn-success ">Create a Blog Post</router-link>
+                        </div>
                         <pagination :current_page="this.iPage" :total_page="this.iTotalPage" v-model="iPage"></pagination>
                     </div>
                 </div>
@@ -115,7 +118,6 @@
         },
         async beforeMount() {
             this.oCategories = await Category.fetchAll();
-            this.search();
         }
     }
 </script>

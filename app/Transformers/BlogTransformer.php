@@ -45,7 +45,9 @@ class BlogTransformer extends TransformerAbstract
             'id'          => $oBlogModel->id,
             'title'       => $oBlogModel->title,
             'content'     => $oBlogModel->content,
+            'category_id' => $oBlogModel->category_id,
             'category'    => $oBlogModel->category->title,
+            'author_id'   => $oBlogModel->author_id,
             'author_name' => $oBlogModel->author->name,
             'created_at'  => $oBlogModel->created_at,
             'updated_at'  => $oBlogModel->updated_at

@@ -20,7 +20,9 @@ export default class Blog extends Model {
             content: this.string(''),
             comments: this.attr(null),
             category: this.string(''),
+            category_id: this.number(0),
             author: this.attr(null),
+            author_id: this.number(0),
             author_name: this.string(''),
             created_at: this.string(''),
             updated_at: this.string(''),
@@ -50,6 +52,24 @@ export default class Blog extends Model {
         await this.api().get('/' + iId, {params: {...oParams}});
 
         return this.query().whereId(iBlogId).withAllRecursive().first();
+    }
+
+    static async createBlog(oData) {
+        let oResult = await this.api().post('', oData);
+
+        return oResult.response;
+    }
+
+    static async updateBlog(iId, oData) {
+        let oResult = await this.api().put('/' + iId, oData);
+
+        return oResult.response;
+    }
+
+    static async deleteBlog(iId) {
+        let oResult = await this.api().delete('/' + iId);
+
+        return oResult.response.status;
     }
 
     static convertOrderByField(sOrderBy) {
