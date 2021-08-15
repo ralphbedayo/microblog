@@ -12,9 +12,10 @@ class BlogRepository extends BaseRepository
     protected $fieldSearchable = [
         'id'             => '=',
         'author_id'      => '=',
+        'author.name'    => 'like',
         'title'          => 'like',
-        'category_id'    => '=',
-        'category.title' => '=',
+        'category_id'    => 'in',
+        'category.title' => 'in',
     ];
 
     /**

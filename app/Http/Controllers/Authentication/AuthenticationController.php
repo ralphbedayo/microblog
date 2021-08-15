@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Authentication;
 use App\Constants\AuthenticationConstants;
 use App\Constants\UserConstants;
 use App\Exceptions\CreateResourceException;
+use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Authentication\LoginRequest;
 use App\Services\User\UserService;
@@ -37,7 +38,8 @@ class AuthenticationController extends BaseController
     public function view()
     {
         if (Auth::check() === true) {
-            return redirect('/');
+
+            return redirect(UserConstants::HOME_URL[Auth::user()->user_type]);
         }
 
         return view('login');
@@ -87,7 +89,7 @@ class AuthenticationController extends BaseController
         if (Auth::attempt($aCredentials) === true) {
             request()->session()->regenerate();
 
-            return redirect('/');
+            return redirect(UserConstants::HOME_URL[Auth::user()->user_type]);
         }
 
         return back()->withErrors([
@@ -106,9 +108,13 @@ class AuthenticationController extends BaseController
         return redirect('/login');
     }
 
+    /**
+     * @return array
+     * @throws ResourceNotFoundException
+     */
     public function user()
     {
-        return Auth::user();
+        return $this->transform(Auth::user(), UserTransformer::class);
     }
 
 }

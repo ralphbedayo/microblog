@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\User\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,12 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [AuthenticationController::class, 'user']);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('blogs', BlogController::class);
+    Route::resource('comments', CommentController::class);
 });
-
-Route::resource('users', UserController::class);
-Route::get('/login', [UserController::class, 'login']);
-
-Route::resource('blogs', BlogController::class);
-Route::resource('comments', CommentController::class);

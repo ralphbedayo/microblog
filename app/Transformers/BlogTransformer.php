@@ -42,12 +42,13 @@ class BlogTransformer extends TransformerAbstract
         $this->oCommentTransformer = new CommentTransformer();
 
         return [
-            'id'         => $oBlogModel->id,
-            'title'      => $oBlogModel->title,
-            'content'    => $oBlogModel->content,
-            'category'   => $oBlogModel->category->title,
-            'created_at' => $oBlogModel->created_at,
-            'updated_at' => $oBlogModel->updated_at
+            'id'          => $oBlogModel->id,
+            'title'       => $oBlogModel->title,
+            'content'     => $oBlogModel->content,
+            'category'    => $oBlogModel->category->title,
+            'author_name' => $oBlogModel->author->name,
+            'created_at'  => $oBlogModel->created_at,
+            'updated_at'  => $oBlogModel->updated_at
         ];
     }
 

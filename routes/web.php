@@ -26,4 +26,5 @@ Route::get('/logout', [AuthenticationController::class, 'logout']);
 Route::get('/me', [AuthenticationController::class, 'user']);
 
 
-Route::get('/', [ViewController::class, 'view']);
+Route::get('/admin', [ViewController::class, 'view']);
+Route::get('/{all}', [ViewController::class, 'view'])->where('all', '.*');

@@ -6,6 +6,23 @@ namespace App\Constants;
 
 class UserConstants
 {
+    const ADMIN_USER_TYPE = 'admin';
+    const BLOGGER_USER_TYPE = 'blogger';
+
+    const HOME_URL = [
+        self::ADMIN_USER_TYPE => '/admin',
+        self::BLOGGER_USER_TYPE  => '/'
+    ];
+
+    const ALLOWED_WEB_ROUTES = [
+        self::ADMIN_USER_TYPE => [
+            'admin',
+        ],
+        self::BLOGGER_USER_TYPE => [
+
+        ]
+    ];
+
     const USER_TYPES = [
         'blogger',
         'admin'

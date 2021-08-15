@@ -23,6 +23,7 @@ class UserTransformer extends TransformerAbstract
         return [
             'id'         => $oUserModel->id,
             'username'   => $oUserModel->username,
+            'user_type'  => $oUserModel->user_type,
             'name'       => $oUserModel->name,
             'created_at' => $oUserModel->created_at,
             'updated_at' => $oUserModel->updated_at

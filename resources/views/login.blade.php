@@ -28,22 +28,18 @@
                         <form action="/login" method="post">
                             {{ csrf_field() }}
 
-                            @if (empty($errors->all()) === false)
-                                <div class="text-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
+                            @error('username')
+                            <span class="text-danger"> {{$message}}</span>
+                            @enderror
                             <div class="input-group mb-2">
                                 <input type="text" class="form-control" name="username" placeholder="Username"
                                        aria-label="Username"
                                        aria-describedby="basic-addon1" required>
                             </div>
 
+                            @error('password')
+                            <span class="text-danger"> {{$message}}</span>
+                            @enderror
                             <div class="input-group mb-4">
                                 <input type="password" id="password" name="password" class="form-control"
                                        placeholder="Password"
