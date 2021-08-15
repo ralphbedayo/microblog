@@ -27,16 +27,7 @@
                 </div>
                 <div class="row mt-5">
                     <div class="d-flex justify-content-end">
-                        <div>
-                            <button class="btn btn-outline-primary" v-on:click="prevPage" :disabled="this.iPage === 1">
-                                <
-                            </button>
-                            <span class="mx-1">Page {{ this.iPage}} out of {{ this.iTotalPage}}</span>
-                            <button class="btn btn-outline-primary" v-on:click="nextPage"
-                                    :disabled="this.iPage === this.iTotalPage"> >
-                            </button>
-                        </div>
-
+                        <pagination :current_page="this.iPage" :total_page="this.iTotalPage" v-model="iPage"></pagination>
                     </div>
                 </div>
             </div>
@@ -62,10 +53,11 @@
     import Blog from "../models/Blog";
     import Category from "../models/Category";
     import Search from "../components/common/Search";
+    import Pagination from "../components/common/Pagination";
 
     export default {
         name: "Home",
-        components: {Search, BlogItem, Navbar},
+        components: {Pagination, Search, BlogItem, Navbar},
         data() {
             return {
                 oUser: User,
@@ -96,6 +88,9 @@
         watch: {
             oSearchParams: function (val) {
                 this.search();
+            },
+            iPage: function (val) {
+                this.search()
             }
         },
         methods: {
@@ -107,14 +102,6 @@
                 this.oBlogItems = oResponse.data;
                 this.iPage = oResponse.meta.pagination.current_page;
                 this.iTotalPage = oResponse.meta.pagination.total_pages;
-            },
-            prevPage() {
-                this.iPage -= 1;
-                this.search();
-            },
-            nextPage() {
-                this.iPage += 1;
-                this.search();
             }
         },
         async beforeCreate() {
