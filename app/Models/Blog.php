@@ -41,4 +41,15 @@ class Blog extends Model
         return $this->hasMany(Comment::class, 'blog_id', 'id');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($oBlog) {
+            $oBlog->comments()->delete();
+
+            return true;
+        });
+    }
+
 }

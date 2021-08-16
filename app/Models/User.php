@@ -37,4 +37,28 @@ class User extends Authenticatable
         'remember_token',
         'api_token',
     ];
+
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'author_id', 'id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'comment_author_id', 'id');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($oUser) {
+            $oUser->blogs()->each(function ($oBlog) {
+                $oBlog->delete();
+            });
+            $oUser->blogs()->delete();
+            $oUser->comments()->delete();
+            return true;
+        });
+    }
 }

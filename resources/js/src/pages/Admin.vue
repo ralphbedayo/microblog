@@ -9,7 +9,7 @@
                 <search
                     :is_blog_home="false"
                     default_search_field="username"
-                    default_order_value="created_at"
+                    default_order_value="updated_at"
                     default_sort_value="desc"
                     :search_field_options="oSearchFieldOptions"
                     :order_by_options="oOrderByOptions"
