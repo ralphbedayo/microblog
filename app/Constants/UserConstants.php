@@ -24,20 +24,23 @@ class UserConstants
     ];
 
     const USER_TYPES = [
-        'blogger',
-        'admin'
+        'admin',
+        'blogger'
     ];
 
     const SAVE_USER_RULES = [
-        'name'     => 'required|string|min:5|max:100',
-        'username' => 'required|alpha_num|min:5|max:50|unique:user',
-        'password' => 'required|alpha_num|min:5|max:100',
+        'name'      => 'required|string|min:5|max:100',
+        'username'  => 'required|alpha_num|min:5|max:50|unique:user',
+        'user_type' => 'bail|alpha_num|in:admin,blogger',
+        'password'  => 'required|alpha_num|min:5|max:100',
     ];
 
     const UPDATE_USER_RULES = [
-        'name'     => 'bail|string|min:5|max:100',
-        'username' => 'bail|alpha_num|min:5|max:50|unique:user',
-        'password' => 'bail|alpha_num|min:5|max:100',
+        'id'        => 'required|int|exists:user,id,deleted_at,NULL',
+        'name'      => 'bail|string|min:5|max:100',
+        'username'  => 'bail|alpha_num|min:5|max:50|unique:user',
+        'user_type' => 'bail|alpha_num|in:admin,blogger',
+        'password'  => 'bail|alpha_num|min:5|max:100',
     ];
 
     const DELETE_USER_RULES = [

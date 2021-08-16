@@ -75,7 +75,7 @@ class UserController extends BaseController
      */
     public function update($iId)
     {
-        $aFormData = $this->validate(request(), UserConstants::UPDATE_USER_RULES);
+        $aFormData = $this->validate(request()->merge(['id' => $iId]), UserConstants::UPDATE_USER_RULES);
 
         $oUserData = $this->oUserService->updateUser($iId, $aFormData);
 

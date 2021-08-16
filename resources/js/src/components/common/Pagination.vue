@@ -3,9 +3,9 @@
         <button class="btn btn-outline-primary" v-on:click="prevPage" :disabled="this.iPage === 1">
             <
         </button>
-        <span class="mx-1">Page {{ this.iPage}} out of {{ total_page}}</span>
+        <span class="mx-1">Page {{ this.current_page}} out of {{ total_page}}</span>
         <button class="btn btn-outline-primary" v-on:click="nextPage"
-                :disabled="this.iPage === this.total_page"> >
+                :disabled="this.current_page === this.total_page"> >
         </button>
     </div>
 </template>
@@ -17,6 +17,14 @@
             return {
                 iPage: this.current_page ?? 1
             };
+        },
+        watch: {
+            total_page(newVal) {
+                if (newVal < this.current_page) {
+                    this.iPage = newVal;
+                    this.emitSearch();
+                }
+            }
         },
         methods: {
             emitSearch() {

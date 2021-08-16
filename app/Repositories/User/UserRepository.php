@@ -11,9 +11,10 @@ class UserRepository extends BaseRepository
 {
 
     protected $fieldSearchable = [
-        'id'       => '=',
-        'name'     => 'like',
-        'username' => 'like',
+        'id'        => '=',
+        'name'      => 'like',
+        'username'  => 'like',
+        'user_type' => '=',
     ];
 
     /**

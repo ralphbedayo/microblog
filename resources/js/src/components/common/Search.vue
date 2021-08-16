@@ -83,7 +83,7 @@
 
                 <div class="row mt-3">
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-success w-25"> Go</button>
+                        <button type="submit" class="btn fs-5 btn-success w-25"><strong>Go</strong></button>
                     </div>
                 </div>
             </form>

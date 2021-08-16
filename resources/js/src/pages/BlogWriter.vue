@@ -73,6 +73,7 @@
         components: {Navbar},
         props: ['is_create', 'id'],
         data() {
+            // @todo replace html validation with Vue validation
             return {
                 oAuthUser: {},
                 oCategories: {},

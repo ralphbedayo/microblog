@@ -67,4 +67,24 @@ export default class User extends Model {
         return this.find(iId);
     }
 
+    static async createUser(oData) {
+        let oResult = await this.api().post('', oData);
+
+        return oResult.response;
+    }
+
+    static async updateUser(iId, oData) {
+        delete oData.username;
+
+        let oResult = await this.api().put('/' + iId, oData);
+
+        return oResult.response;
+    }
+
+    static async deleteUser(iId) {
+        let oResult = await this.api().delete('/' + iId);
+
+        return oResult.response.status;
+    }
+
 }

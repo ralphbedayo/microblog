@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Admin from "../pages/Admin";
 import BlogPost from "../pages/BlogPost";
 import BlogWriter from "../pages/BlogWriter";
+import UserEditor from "../pages/UserEditor";
 
 
 Vue.use(Router);
@@ -17,6 +18,18 @@ export default new Router({
             component: Admin
         },
         {
+            path: '/admin/create',
+            name: 'Create User',
+            component: UserEditor,
+            props: {is_create: true}
+        },
+        {
+            path: '/admin/users/:id/update',
+            name: 'Update User',
+            component: UserEditor,
+            props: route => ({is_create: false, id: route.params.id})
+        },
+        {
             path: '/blog/:id',
             name: 'Blog Detail',
             component: BlogPost
@@ -25,7 +38,7 @@ export default new Router({
             path: '/blog/:id/edit',
             name: 'Edit Blog',
             component: BlogWriter,
-            props: route => ({is_create: false, id: route.params.id })
+            props: route => ({is_create: false, id: route.params.id})
         },
         {
             path: '/create',

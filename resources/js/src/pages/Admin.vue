@@ -17,7 +17,11 @@
                 ></search>
             </div>
             <div class="row mt-5">
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <router-link to="/admin/create" class="btn btn-lg btn-success "><i class="bi bi-person-plus-fill"></i>
+                        </router-link>
+                    </div>
                     <pagination :current_page="iPage" v-model="iPage" :total_page="this.iTotalPage"></pagination>
                 </div>
             </div>
@@ -44,9 +48,11 @@
                         <td>{{moment(oUser.updated_at).format(sDateTimeFormat)}}</td>
                         <td>
                             <div v-if="oUser.id !== oAuthUser.id">
-                                <button class="btn btn-md btn-outline-primary"><i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-md btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                <router-link :to="'/admin/users/'+oUser.id +'/update'"
+                                             class="btn btn-md btn-outline-primary"><i class="bi bi-pencil-square"></i>
+                                </router-link>
+                                <button class="btn btn-md btn-danger" v-on:click="deleteUser(oUser.id)"><i
+                                    class="bi bi-trash-fill"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -60,7 +66,12 @@
 </template>
 <script>
     import User from "../models/User";
-    import {ADMIN_USER_TYPE, SHORT_DATE_TIME_FORMAT} from "../constants/common";
+    import {
+        ADMIN_USER_TYPE,
+        DELETE_RESOURCE_CONFIRM_MESSAGE,
+        OK_STATUS,
+        SHORT_DATE_TIME_FORMAT
+    } from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import Search from "../components/common/Search";
     import Pagination from "../components/common/Pagination";
@@ -82,6 +93,7 @@
                     'id': 'User ID',
                     'username': 'Username',
                     'name': 'Name',
+                    'user_type': 'User Type',
                     'created_at': 'Date Created',
                     'updated_at': 'Date Last Updated'
                 },
@@ -101,6 +113,17 @@
                 this.oUsers = oResponse.data;
                 this.iPage = oResponse.meta.pagination.current_page;
                 this.iTotalPage = oResponse.meta.pagination.total_pages;
+            },
+            async deleteUser(iId) {
+                if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
+                    return;
+                }
+
+                let iResponseCode = await User.deleteUser(iId);
+
+                if (iResponseCode === OK_STATUS) {
+                    this.search();
+                }
             }
         },
         watch: {
@@ -118,8 +141,6 @@
                 window.location.href = '/';
             }
         },
-        beforeMount() {
-        }
     }
 </script>
 
