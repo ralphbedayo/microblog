@@ -42,15 +42,21 @@
                     <div class="row mt-3 ">
                         <div class="row">
                             <div class="shadow p-2 rounded rounded-3">
-                                <form action="" v-on:submit.prevent="addComment">
-                                    <div class="input-group">
-                                        <input v-model="sCommentContent" type="text" class="form-control"
-                                               placeholder="Write a comment" minlength="5" maxlength="100"
-                                               aria-label="Write a comment" aria-describedby="add-comment-button">
-                                        <button type="submit" class="btn btn-success" id="add-comment-button">
+                                <form action="" v-on:submit.prevent="addComment" novalidate>
+                                    <div class="input-group has-validation">
+                                        <input type="text" class="form-control"
+                                               placeholder="Write a comment" minlength="5" maxlength="255"
+                                               aria-label="Write a comment" aria-describedby="add-comment-button"
+                                               :class="{'form-control': true, 'is-invalid': $v.sCommentContent.$error}"
+                                               v-model.trim="$v.sCommentContent.$model"
+                                        >
+                                        <button type="submit" class="btn btn-success" id="add-comment-button" :disabled="this.sCommentContent.length === 0">
                                             Add
                                         </button>
+                                        <div class="invalid-feedback" v-if="!$v.sCommentContent.minLength"> Comment must have at least {{$v.sCommentContent.$params.minLength.min}} letters.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sCommentContent.maxLength"> Comment have a limit of {{$v.sCommentContent.$params.maxLength.max}} letters.</div>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
@@ -79,16 +85,23 @@
                                      v-if="oEditState.hasOwnProperty(oCommentItem.id)">
                                     <form action="" v-on:submit.prevent="editComment(oCommentItem.id)">
                                         <div class="d-flex">
-                                            <div class="input-group me-2">
-                                                <input v-model="sEditCommentContent" type="text" class="form-control"
+                                            <div class="input-group me-2 has-validation">
+                                                <input type="text" class="form-control"
                                                        placeholder="Write comment replacement" minlength="5"
-                                                       maxlength="100"
+                                                       maxlength="255"
                                                        aria-label="Write comment replacement"
-                                                       aria-describedby="edit-comment-button">
+                                                       aria-describedby="edit-comment-button"
+                                                       :class="{'form-control': true, 'is-invalid': $v.sEditCommentContent.$error}"
+                                                       v-model.trim="$v.sEditCommentContent.$model"
+                                                >
+
                                                 <button type="submit" class="btn btn-outline-success "
-                                                        id="edit-comment-button">
+                                                        id="edit-comment-button" :disabled="sEditCommentContent.length === 0">
                                                     Submit
                                                 </button>
+                                                <div class="invalid-feedback" v-if="!$v.sEditCommentContent.required"> Updated Comment is required.</div>
+                                                <div class="invalid-feedback" v-if="!$v.sEditCommentContent.minLength"> Comment must have at least {{$v.sEditCommentContent.$params.minLength.min}} letters.</div>
+                                                <div class="invalid-feedback" v-if="!$v.sEditCommentContent.maxLength"> Comment have a limit of {{$v.sEditCommentContent.$params.maxLength.max}} letters.</div>
                                             </div>
                                             <button type="button" class="btn btn-secondary" v-on:click="cancelEdit">
                                                 Cancel
@@ -117,6 +130,7 @@
     import Navbar from "../components/navbar/Navbar";
     import Blog from "../models/Blog";
     import Comment from "../models/Comment";
+    import {maxLength, minLength, required} from "vuelidate/lib/validators";
 
     export default {
         name: "BlogPost",
@@ -132,8 +146,25 @@
                 sEditCommentContent: ''
             }
         },
+        validations: {
+            sCommentContent: {
+                minLength: minLength(5),
+                maxLength: maxLength(250),
+            },
+            sEditCommentContent: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(250),
+            }
+        },
         methods: {
             async addComment() {
+                this.$v.$touch();
+
+                if (this.sCommentContent.length === 0 || this.$v.sCommentContent.$invalid) {
+                    return;
+                }
+
                 let oData = {
                     blog_id: this.iBlogId,
                     comment_author_id: this.oAuthUser.id,
@@ -177,6 +208,12 @@
                 this.oEditState = {};
             },
             async editComment(iId) {
+                this.$v.$touch();
+
+                if (this.sEditCommentContent.length === 0 || this.$v.sEditCommentContent.$invalid) {
+                    return;
+                }
+
                 try {
                     let iResponseCode = await Comment.updateComment(iId, {content: this.sEditCommentContent});
 
@@ -206,6 +243,8 @@
             }
         },
         async beforeCreate() {
+            // @todo refactor this block of code into mixin
+
             try {
                 this.oAuthUser = await User.getAuthUser();
 

@@ -10,28 +10,39 @@
                         </div>
                     </div>
                     <div class="row shadow rounded rounded-3 p-5 pb-3 justify-content-around">
-                        <form action="" v-on:submit.prevent="saveUser">
+                        <form action="" v-on:submit.prevent="saveUser" novalidate>
                             <div class="row">
-                                <div class="input-group mb-3">
+
+                                <div class="input-group has-validation mb-3">
                                     <span class="input-group-text" id="name-label"> Name </span>
-                                    <input type="text" class="form-control" placeholder="Enter full name"
+                                    <input type="text"  placeholder="Enter full name"
                                            aria-label="Enter full name" aria-describedby="name-label"
                                            minlength="5" maxlength="150"
                                            required
-                                           v-model="sName"
+                                           :class="{'form-control': true, 'is-invalid': ($v.sName.$error)}"
+                                           v-model.trim="$v.sName.$model"
                                     >
+                                    <div class="invalid-feedback" v-if="!$v.sName.required"> Name is required.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sName.minLength"> Name must have at least {{$v.sName.$params.minLength.min}} letters.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sName.maxLength"> Name have a limit of {{$v.sName.$params.maxLength.max}} letters.</div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="input-group mb-3">
+                                <div class="input-group has-validation mb-3">
                                     <span class="input-group-text" id="username-label"> Username </span>
                                     <input type="text" class="form-control" placeholder="Enter an alphanumeric username"
                                            aria-label="Enter an alphanumeric username" aria-describedby="username-label"
                                            minlength="5" maxlength="50"
                                            required pattern="[a-zA-Z0-9]+"
                                            :disabled="is_create === false"
-                                           v-model="sUsername"
+                                           :class="{'form-control': true, 'is-invalid': ($v.sUsername.$invalid && $v.sUsername.$dirty) || bUsernameExists}"
+                                           v-model.trim="$v.sUsername.$model"
                                     >
+                                    <div class="invalid-feedback" v-if="bUsernameExists"> Username already exists.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sUsername.required"> Username is required.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sUsername.alphaNum"> Username should be alpha-numeric.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sUsername.minLength"> Username must have at least {{$v.sUsername.$params.minLength.min}} letters.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sUsername.maxLength"> Username have a limit of {{$v.sUsername.$params.maxLength.max}} letters.</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -42,8 +53,13 @@
                                            aria-label="Enter an alphanumeric password" aria-describedby="password-label"
                                            minlength="5" maxlength="50"
                                            required pattern="[a-zA-Z0-9]+"
-                                           v-model="sPassword"
+                                           :class="{'form-control': true, 'is-invalid': ($v.sPassword.$invalid && $v.sPassword.$dirty)}"
+                                           v-model.trim="$v.sPassword.$model"
                                     >
+                                    <div class="invalid-feedback" v-if="!$v.sPassword.required"> Password is required.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sPassword.alphaNum"> Password should be alpha-numeric.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sPassword.minLength"> Password must have at least {{$v.sPassword.$params.minLength.min}} letters.</div>
+                                    <div class="invalid-feedback" v-if="!$v.sPassword.maxLength"> Password have a limit of {{$v.sPassword.$params.maxLength.max}} letters.</div>
                                 </div>
                             </div>
                             <div class="row">
@@ -77,24 +93,57 @@
     import {ADMIN_USER_TYPE, BLOGGER_USER_TYPE, OK_STATUS, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import User from "../models/User";
+    import {required, minLength, maxLength, alphaNum, } from 'vuelidate/lib/validators';
 
     export default {
         name: 'UserEditor',
         components: {Navbar},
         props: ['is_create', 'id'],
         data() {
-            // @todo replace html validation with Vue validation
+
             return {
                 sUsername: '',
                 sName: '',
                 sPassword: '',
                 sUserType: BLOGGER_USER_TYPE,
                 aUserTypes: [ADMIN_USER_TYPE, BLOGGER_USER_TYPE],
-                oValidationMessages: {}
+                oValidationMessages: {},
+                bUsernameExists: false
             };
+        },
+        validations: {
+            sName: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(100),
+            },
+            sUsername: {
+                required,
+                alphaNum,
+                minLength: minLength(5),
+                maxLength: maxLength(50),
+            },
+            sPassword: {
+                required,
+                alphaNum,
+                minLength: minLength(5),
+                maxLength: maxLength(50),
+            },
+            sUserType: {
+                required,
+                alphaNum
+            },
+
         },
         methods: {
             async saveUser() {
+                this.bUsernameExists = await this.checkUsernameExists();
+
+                this.$v.$touch();
+                if (this.$v.$invalid || this.bUsernameExists) {
+                    return;
+                }
+
                 let oUserData = {
                     'username': this.sUsername,
                     'name': this.sName,
@@ -111,7 +160,6 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
-
             },
             async setUserData() {
                 try {
@@ -126,8 +174,24 @@
                 }
 
             },
+            async checkUsernameExists() {
+                let oSearchParams = {
+                    search: 'username:' + this.sUsername,
+                    searchFields: 'username:='
+                };
+
+                try {
+                    let oResponse = await User.fetchAll(oSearchParams);
+
+                    return oResponse.data.length > 0;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
+            }
         },
         async beforeCreate() {
+            // @todo refactor this block of code into mixin
+
             try {
                 this.oAuthUser = await User.getAuthUser();
 

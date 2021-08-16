@@ -145,6 +145,8 @@
         },
 
         async beforeCreate() {
+            // @todo refactor this block of code into mixin
+
             try {
                 this.oAuthUser = await User.getAuthUser();
 

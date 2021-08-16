@@ -11,15 +11,19 @@
                             </div>
                         </div>
                         <div class="row shadow rounded rounded-3 p-3 py-5 justify-content-around">
-                            <form action="" v-on:submit.prevent="submitBlog">
+                            <form action="" v-on:submit.prevent="submitBlog" novalidate>
                                 <div class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="title-label"> Title </span>
                                         <input type="text" class="form-control" placeholder="Write a good title here"
                                                aria-label="Write a good title here" aria-describedby="title-label"
                                                minlength="5" maxlength="150"
-                                               v-model="sTitle"
+                                               :class="{'form-control': true, 'is-invalid': $v.sTitle.$error}"
+                                               v-model.trim="$v.sTitle.$model"
                                         >
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.required"> Title is required.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.minLength"> Title must have at least {{$v.sTitle.$params.minLength.min}} letters.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.maxLength"> Title have a limit of {{$v.sTitle.$params.maxLength.max}} letters.</div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -36,10 +40,17 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="contentTextArea" class="form-label">Content</label>
-                                        <textarea minlength="10" maxlength="5000" class="form-control"
+                                        <textarea minlength="5" maxlength="30000" class="form-control"
                                                   id="contentTextArea"
-                                                  rows="5" v-model="sContent"
-                                                  placeholder="Enter your ideas here"></textarea>
+                                                  rows="5"
+                                                  placeholder="Enter your ideas here"
+                                                  :class="{'form-control': true, 'is-invalid': $v.sContent.$error}"
+                                                  v-model.trim="$v.sContent.$model"
+                                        >
+                                        </textarea>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.required"> Content is required.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.minLength"> Content must have at least {{$v.sContent.$params.minLength.min}} characters.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.maxLength"> Content have a limit of {{$v.sContent.$params.maxLength.max}} characters.</div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -67,13 +78,13 @@
     import {ADMIN_USER_TYPE, OK_STATUS, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Category from "../models/Category";
     import Blog from "../models/Blog";
+    import {maxLength, minLength, required} from "vuelidate/lib/validators";
 
     export default {
         name: 'BlogWriter',
         components: {Navbar},
         props: ['is_create', 'id'],
         data() {
-            // @todo replace html validation with Vue validation
             return {
                 oAuthUser: {},
                 oCategories: {},
@@ -82,8 +93,26 @@
                 iCategoryId: 1,
             }
         },
+        validations: {
+            sTitle: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(100),
+            },
+            sContent: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(25000),
+            }
+        },
         methods: {
             async submitBlog() {
+
+                this.$v.$touch();
+                if (this.$v.$invalid || this.bUsernameExists) {
+                    return;
+                }
+
                 let oBlogData = {
                     title: this.sTitle,
                     content: this.sContent,
@@ -119,6 +148,8 @@
             }
         },
         async beforeCreate() {
+            // @todo refactor this block of code into mixin
+
             try {
                 this.oAuthUser = await User.getAuthUser();
 

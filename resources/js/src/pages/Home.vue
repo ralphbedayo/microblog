@@ -113,6 +113,8 @@
             }
         },
         async beforeCreate() {
+            // @todo refactor this block of code into mixin
+
             if (store.state.authenticated === false) {
                 try {
                     let oAuthUser = await User.getAuthUser();
