@@ -19,7 +19,7 @@
             <div class="row mt-5">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <router-link to="/admin/create" class="btn btn-lg btn-success "><i class="bi bi-person-plus-fill"></i>
+                        <router-link to="/admin/create" class="btn btn-success "> Add User
                         </router-link>
                     </div>
                     <pagination :current_page="iPage" v-model="iPage" :total_page="this.iTotalPage"></pagination>
@@ -70,7 +70,7 @@
         ADMIN_USER_TYPE,
         DELETE_RESOURCE_CONFIRM_MESSAGE,
         OK_STATUS,
-        SHORT_DATE_TIME_FORMAT
+        SHORT_DATE_TIME_FORMAT, SYSTEM_ERROR_MESSAGE
     } from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import Search from "../components/common/Search";
@@ -109,21 +109,30 @@
                 let oPagination = {page: this.iPage, limit: this.iLimit};
                 let oSearchParams = this.oSearchParams;
 
-                let oResponse = await User.fetchAll({...oSearchParams, ...oPagination});
-                this.oUsers = oResponse.data;
-                this.iPage = oResponse.meta.pagination.current_page;
-                this.iTotalPage = oResponse.meta.pagination.total_pages;
+                try {
+                    let oResponse = await User.fetchAll({...oSearchParams, ...oPagination});
+                    this.oUsers = oResponse.data;
+                    this.iPage = oResponse.meta.pagination.current_page;
+                    this.iTotalPage = oResponse.meta.pagination.total_pages;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
             },
             async deleteUser(iId) {
                 if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
                     return;
                 }
 
-                let iResponseCode = await User.deleteUser(iId);
+                try {
+                    let iResponseCode = await User.deleteUser(iId);
 
-                if (iResponseCode === OK_STATUS) {
-                    this.search();
+                    if (iResponseCode === OK_STATUS) {
+                        this.search();
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
+
             }
         },
         watch: {
@@ -134,11 +143,16 @@
                 this.search();
             }
         },
-        async beforeCreate() {
-            this.oAuthUser = await User.getAuthUser();
 
-            if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
-                window.location.href = '/';
+        async beforeCreate() {
+            try {
+                this.oAuthUser = await User.getAuthUser();
+
+                if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
+                    window.location.href = '/';
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         },
     }

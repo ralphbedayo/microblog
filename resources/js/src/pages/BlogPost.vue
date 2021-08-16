@@ -107,7 +107,13 @@
 <script>
 
     import User from "../models/User";
-    import {ADMIN_USER_TYPE, DATE_TIME_FORMAT, DELETE_RESOURCE_CONFIRM_MESSAGE, OK_STATUS} from "../constants/common";
+    import {
+        ADMIN_USER_TYPE,
+        DATE_TIME_FORMAT,
+        DELETE_RESOURCE_CONFIRM_MESSAGE,
+        OK_STATUS,
+        SYSTEM_ERROR_MESSAGE
+    } from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import Blog from "../models/Blog";
     import Comment from "../models/Comment";
@@ -134,11 +140,15 @@
                     content: this.sCommentContent
                 };
 
-                let iResponseCode = await Comment.createComment(oData);
+                try {
+                    let iResponseCode = await Comment.createComment(oData);
 
-                if (iResponseCode === OK_STATUS) {
-                    this.oBlogItem = await Blog.fetchById(this.iBlogId);
-                    this.sCommentContent = '';
+                    if (iResponseCode === OK_STATUS) {
+                        this.oBlogItem = await Blog.fetchById(this.iBlogId);
+                        this.sCommentContent = '';
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             },
             async deleteComment(iId) {
@@ -146,11 +156,15 @@
                     return;
                 }
 
-                let iResponseCode = await Comment.deleteComment(iId);
+                try {
+                    let iResponseCode = await Comment.deleteComment(iId);
 
-                if (iResponseCode === OK_STATUS) {
-                    this.oBlogItem = await Blog.fetchById(this.iBlogId);
-                    this.sCommentContent = '';
+                    if (iResponseCode === OK_STATUS) {
+                        this.oBlogItem = await Blog.fetchById(this.iBlogId);
+                        this.sCommentContent = '';
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             },
             startEdit(iId, sContent) {
@@ -163,12 +177,15 @@
                 this.oEditState = {};
             },
             async editComment(iId) {
+                try {
+                    let iResponseCode = await Comment.updateComment(iId, {content: this.sEditCommentContent});
 
-                let iResponseCode = await Comment.updateComment(iId, {content: this.sEditCommentContent});
-
-                if (iResponseCode === OK_STATUS) {
-                    this.cancelEdit();
-                    this.oBlogItem = await Blog.fetchById(this.iBlogId);
+                    if (iResponseCode === OK_STATUS) {
+                        this.cancelEdit();
+                        this.oBlogItem = await Blog.fetchById(this.iBlogId);
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             },
             async deleteBlog() {
@@ -176,22 +193,35 @@
                     return;
                 }
 
-                let iResponseCode = await Blog.deleteBlog(this.oBlogItem.id);
 
-                if (iResponseCode === OK_STATUS) {
-                    await this.$router.push({path: '/'});
+                try {
+                    let iResponseCode = await Blog.deleteBlog(this.oBlogItem.id);
+
+                    if (iResponseCode === OK_STATUS) {
+                        await this.$router.push({path: '/'});
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             }
         },
         async beforeCreate() {
-            this.oAuthUser = await User.getAuthUser();
+            try {
+                this.oAuthUser = await User.getAuthUser();
 
-            if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
-                window.location.href = '/admin';
+                if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
+                    window.location.href = '/admin';
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         },
         async beforeMount() {
-            this.oBlogItem = await Blog.fetchById(this.iBlogId);
+            try {
+                this.oBlogItem = await Blog.fetchById(this.iBlogId);
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
+            }
         }
     }
 </script>

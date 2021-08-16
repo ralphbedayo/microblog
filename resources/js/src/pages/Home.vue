@@ -30,7 +30,8 @@
                         <div>
                             <router-link to="/create" class="btn btn-success ">Create a Blog Post</router-link>
                         </div>
-                        <pagination :current_page="this.iPage" :total_page="this.iTotalPage" v-model="iPage"></pagination>
+                        <pagination :current_page="this.iPage" :total_page="this.iTotalPage"
+                                    v-model="iPage"></pagination>
                     </div>
                 </div>
             </div>
@@ -50,7 +51,7 @@
 <script>
     import User from "../models/User";
     import store from "../store";
-    import {ADMIN_USER_TYPE} from "../constants/common";
+    import {ADMIN_USER_TYPE, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import BlogItem from "../components/home/BlogItem";
     import Blog from "../models/Blog";
@@ -101,23 +102,35 @@
                 let oPagination = {page: this.iPage, limit: this.iLimit};
                 let oSearchParams = this.oSearchParams;
 
-                let oResponse = await Blog.fetch({...oSearchParams, ...oPagination});
-                this.oBlogItems = oResponse.data;
-                this.iPage = oResponse.meta.pagination.current_page;
-                this.iTotalPage = oResponse.meta.pagination.total_pages;
+                try {
+                    let oResponse = await Blog.fetch({...oSearchParams, ...oPagination});
+                    this.oBlogItems = oResponse.data;
+                    this.iPage = oResponse.meta.pagination.current_page;
+                    this.iTotalPage = oResponse.meta.pagination.total_pages;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
             }
         },
         async beforeCreate() {
             if (store.state.authenticated === false) {
-                let oAuthUser = await User.getAuthUser();
+                try {
+                    let oAuthUser = await User.getAuthUser();
 
-                if (oAuthUser.user_type === ADMIN_USER_TYPE) {
-                    window.location.href = '/admin';
+                    if (oAuthUser.user_type === ADMIN_USER_TYPE) {
+                        window.location.href = '/admin';
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             }
         },
         async beforeMount() {
-            this.oCategories = await Category.fetchAll();
+            try {
+                this.oCategories = await Category.fetchAll();
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
+            }
         }
     }
 </script>

@@ -74,7 +74,7 @@
 
 </template>
 <script>
-    import {ADMIN_USER_TYPE, BLOGGER_USER_TYPE, OK_STATUS} from "../constants/common";
+    import {ADMIN_USER_TYPE, BLOGGER_USER_TYPE, OK_STATUS, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Navbar from "../components/navbar/Navbar";
     import User from "../models/User";
 
@@ -102,27 +102,40 @@
                     'user_type': this.sUserType,
                 };
 
-                let oResponse = this.is_create ? await User.createUser(oUserData) : await User.updateUser(this.id, oUserData);
+                try {
+                    let oResponse = this.is_create ? await User.createUser(oUserData) : await User.updateUser(this.id, oUserData);
 
-                if (oResponse.status === OK_STATUS) {
-                    await this.$router.push({path: '/admin'});
+                    if (oResponse.status === OK_STATUS) {
+                        await this.$router.push({path: '/admin'});
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
 
             },
             async setUserData() {
-                let oUserData = await User.fetchById(this.id);
+                try {
+                    let oUserData = await User.fetchById(this.id);
 
-                this.sUsername = oUserData.username;
-                this.sName = oUserData.name;
-                this.sPassword = oUserData.password;
-                this.sUserType = oUserData.user_type;
+                    this.sUsername = oUserData.username;
+                    this.sName = oUserData.name;
+                    this.sPassword = oUserData.password;
+                    this.sUserType = oUserData.user_type;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
+
             },
         },
         async beforeCreate() {
-            this.oAuthUser = await User.getAuthUser();
+            try {
+                this.oAuthUser = await User.getAuthUser();
 
-            if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
-                window.location.href = '/';
+                if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
+                    window.location.href = '/';
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         },
         beforeMount() {

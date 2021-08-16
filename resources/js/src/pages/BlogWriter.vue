@@ -64,7 +64,7 @@
 <script>
     import Navbar from "../components/navbar/Navbar";
     import User from "../models/User";
-    import {ADMIN_USER_TYPE, OK_STATUS} from "../constants/common";
+    import {ADMIN_USER_TYPE, OK_STATUS, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Category from "../models/Category";
     import Blog from "../models/Blog";
 
@@ -91,34 +91,53 @@
                     author_id: this.oAuthUser.id,
                 };
 
-                let oResponse = this.is_create ? await Blog.createBlog(oBlogData) : await Blog.updateBlog(this.id, oBlogData);
 
-                if (oResponse.status === OK_STATUS) {
-                    let iNewBlogId = oResponse.data.data.id;
+                try {
+                    let oResponse = this.is_create ? await Blog.createBlog(oBlogData) : await Blog.updateBlog(this.id, oBlogData);
 
-                    await this.$router.push({path: '/blog/' + iNewBlogId});
+                    if (oResponse.status === OK_STATUS) {
+                        let iNewBlogId = oResponse.data.data.id;
+
+                        await this.$router.push({path: '/blog/' + iNewBlogId});
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             },
             async setBlogData() {
-                let oBlogItem = await Blog.fetchById(this.id);
 
-                this.sTitle = oBlogItem.title;
-                this.sContent = oBlogItem.content;
-                this.iCategoryId = oBlogItem.category_id;
+                try {
+                    let oBlogItem = await Blog.fetchById(this.id);
+
+                    this.sTitle = oBlogItem.title;
+                    this.sContent = oBlogItem.content;
+                    this.iCategoryId = oBlogItem.category_id;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
+
             }
         },
         async beforeCreate() {
-            this.oAuthUser = await User.getAuthUser();
+            try {
+                this.oAuthUser = await User.getAuthUser();
 
-            if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
-                window.location.href = '/admin';
+                if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
+                    window.location.href = '/admin';
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         },
         async beforeMount() {
-            this.oCategories = await Category.fetchAll();
+            try {
+                this.oCategories = await Category.fetchAll();
 
-            if (this.is_create === false) {
-                this.setBlogData();
+                if (this.is_create === false) {
+                    this.setBlogData();
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         }
     }
