@@ -11,15 +11,19 @@
                             </div>
                         </div>
                         <div class="row shadow rounded rounded-3 p-3 py-5 justify-content-around">
-                            <form action="" v-on:submit.prevent="submitBlog">
+                            <form action="" v-on:submit.prevent="submitBlog" novalidate>
                                 <div class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="title-label"> Title </span>
                                         <input type="text" class="form-control" placeholder="Write a good title here"
                                                aria-label="Write a good title here" aria-describedby="title-label"
                                                minlength="5" maxlength="150"
-                                               v-model="sTitle"
+                                               :class="{'form-control': true, 'is-invalid': $v.sTitle.$error}"
+                                               v-model.trim="$v.sTitle.$model"
                                         >
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.required"> Title is required.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.minLength"> Title must have at least {{$v.sTitle.$params.minLength.min}} letters.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sTitle.maxLength"> Title have a limit of {{$v.sTitle.$params.maxLength.max}} letters.</div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -36,10 +40,17 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label for="contentTextArea" class="form-label">Content</label>
-                                        <textarea minlength="10" maxlength="5000" class="form-control"
+                                        <textarea minlength="5" maxlength="30000" class="form-control"
                                                   id="contentTextArea"
-                                                  rows="5" v-model="sContent"
-                                                  placeholder="Enter your ideas here"></textarea>
+                                                  rows="5"
+                                                  placeholder="Enter your ideas here"
+                                                  :class="{'form-control': true, 'is-invalid': $v.sContent.$error}"
+                                                  v-model.trim="$v.sContent.$model"
+                                        >
+                                        </textarea>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.required"> Content is required.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.minLength"> Content must have at least {{$v.sContent.$params.minLength.min}} characters.</div>
+                                        <div class="invalid-feedback" v-if="!$v.sContent.maxLength"> Content have a limit of {{$v.sContent.$params.maxLength.max}} characters.</div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -64,26 +75,44 @@
 <script>
     import Navbar from "../components/navbar/Navbar";
     import User from "../models/User";
-    import {ADMIN_USER_TYPE, OK_STATUS} from "../constants/common";
+    import {ADMIN_USER_TYPE, OK_STATUS, SYSTEM_ERROR_MESSAGE} from "../constants/common";
     import Category from "../models/Category";
     import Blog from "../models/Blog";
+    import {maxLength, minLength, required} from "vuelidate/lib/validators";
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: 'BlogWriter',
         components: {Navbar},
         props: ['is_create', 'id'],
+        mixins: [AuthUserMixin],
         data() {
-            // @todo replace html validation with Vue validation
             return {
-                oAuthUser: {},
                 oCategories: {},
                 sTitle: '',
                 sContent: '',
                 iCategoryId: 1,
             }
         },
+        validations: {
+            sTitle: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(100),
+            },
+            sContent: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(25000),
+            }
+        },
         methods: {
             async submitBlog() {
+                this.$v.$touch();
+                if (this.$v.$invalid || this.bUsernameExists) {
+                    return;
+                }
+
                 let oBlogData = {
                     title: this.sTitle,
                     content: this.sContent,
@@ -91,34 +120,44 @@
                     author_id: this.oAuthUser.id,
                 };
 
-                let oResponse = this.is_create ? await Blog.createBlog(oBlogData) : await Blog.updateBlog(this.id, oBlogData);
 
-                if (oResponse.status === OK_STATUS) {
-                    let iNewBlogId = oResponse.data.data.id;
+                try {
+                    let oResponse = this.is_create ? await Blog.createBlog(oBlogData) : await Blog.updateBlog(this.id, oBlogData);
 
-                    await this.$router.push({path: '/blog/' + iNewBlogId});
+                    if (oResponse.status === OK_STATUS) {
+                        let iNewBlogId = oResponse.data.data.id;
+
+                        await this.$router.push({path: '/blog/' + iNewBlogId});
+                    }
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
                 }
             },
             async setBlogData() {
-                let oBlogItem = await Blog.fetchById(this.id);
 
-                this.sTitle = oBlogItem.title;
-                this.sContent = oBlogItem.content;
-                this.iCategoryId = oBlogItem.category_id;
-            }
-        },
-        async beforeCreate() {
-            this.oAuthUser = await User.getAuthUser();
+                try {
+                    let oBlogItem = await Blog.fetchById(this.id);
 
-            if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
-                window.location.href = '/admin';
+                    this.sTitle = oBlogItem.title;
+                    this.sContent = oBlogItem.content;
+                    this.iCategoryId = oBlogItem.category_id;
+                } catch (e) {
+                    alert(SYSTEM_ERROR_MESSAGE);
+                }
+
             }
         },
         async beforeMount() {
-            this.oCategories = await Category.fetchAll();
+            this.oAuthUser = await this.getAuthUser();
 
-            if (this.is_create === false) {
-                this.setBlogData();
+            try {
+                this.oCategories = await Category.fetchAll();
+
+                if (this.is_create === false) {
+                    this.setBlogData();
+                }
+            } catch (e) {
+                alert(SYSTEM_ERROR_MESSAGE);
             }
         }
     }

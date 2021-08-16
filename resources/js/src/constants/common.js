@@ -13,6 +13,7 @@ export const SHORT_DATE_TIME_FORMAT = 'YYYY-MM-D HH:mm:ss';
 
 export const DELETE_RESOURCE_CONFIRM_MESSAGE = 'Are you sure?';
 
+export const SYSTEM_ERROR_MESSAGE = 'System error. Please contact the developer.';
 
 export const ORDER_FIELD_CONVERSION = {
     'user:author_id|name' : 'author_name',
