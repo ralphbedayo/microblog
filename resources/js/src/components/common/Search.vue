@@ -133,6 +133,7 @@
                 let sL5SearchString = this.setSearchFieldParam();
 
                 if (this.is_blog_home === true) {
+                    sL5SearchString += sL5SearchString.length === 0 ? '' : ';';
                     sL5SearchString += this.setCategorySearchParam();
                 }
 
@@ -153,7 +154,7 @@
                 if (this.sSearchField.length === 0 || this.sSearchValue.length === 0) {
                     return '';
                 }
-                return this.sSearchField + ':' + this.sSearchValue + ';';
+                return this.sSearchField + ':' + this.sSearchValue;
             },
             setSortAndOrderParam() {
                 return {sortedBy: this.sSortByValue, orderBy: this.sOrderByValue};

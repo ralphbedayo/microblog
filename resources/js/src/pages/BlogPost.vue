@@ -4,7 +4,7 @@
         <div class="container pb-5" style="padding-top: 100px">
             <div class="row navigation-section">
                 <div class="d-flex justify-content-end">
-                    <router-link class="btn btn-outline-primary" to="/"> Back</router-link>
+                    <router-link class="btn btn-primary" to="/"> Back</router-link>
                 </div>
             </div>
             <div class="row mt-5 blog-section">
