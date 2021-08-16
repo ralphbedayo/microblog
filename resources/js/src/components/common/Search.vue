@@ -131,7 +131,11 @@
         methods: {
             emitSearch() {
                 let sL5SearchString = this.setSearchFieldParam();
-                sL5SearchString += this.setCategorySearchParam();
+
+                if (this.is_blog_home === true) {
+                    sL5SearchString += this.setCategorySearchParam();
+                }
+
                 let oSortAndOrderParam = this.setSortAndOrderParam();
 
                 let oSearchValues = {

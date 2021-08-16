@@ -1,4 +1,5 @@
 import {Model} from "@vuex-orm/core";
+import {ORDER_FIELD_CONVERSION} from "../constants/common";
 
 
 export default class User extends Model {
@@ -7,7 +8,7 @@ export default class User extends Model {
     static primaryKey = 'id';
 
     static apiConfig = {
-        baseURL: '/api/user',
+        baseURL: '/api/users',
         dataTransformer: (response) => {
             return response.data.data;
         }
@@ -44,6 +45,26 @@ export default class User extends Model {
         }
 
         return this.find(this.store().state.auth_user.id);
+    }
+
+    static async fetchAll(oParams = {}) {
+        this.deleteAll();
+
+        oParams.searchJoin = 'and';
+
+        let oResult = await this.api().get('', {params: oParams});
+
+        oParams.orderBy = ORDER_FIELD_CONVERSION[oParams.orderBy] ?? oParams.orderBy;
+
+        return {data: this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
+    }
+
+    static async fetchById(iId, oParams = {}) {
+        this.deleteAll();
+
+        await this.api().get('/' + iId, {params: {...oParams}});
+
+        return this.find(iId);
     }
 
 }

@@ -9,6 +9,8 @@ export const OK_STATUS = 200;
 
 export const DATE_TIME_FORMAT = 'MMMM DD YYYY [at] h:mm a';
 
+export const SHORT_DATE_TIME_FORMAT = 'YYYY-MM-D HH:mm:ss';
+
 export const DELETE_RESOURCE_CONFIRM_MESSAGE = 'Are you sure?';
 
 

@@ -10,12 +10,12 @@ class UserConstants
     const BLOGGER_USER_TYPE = 'blogger';
 
     const HOME_URL = [
-        self::ADMIN_USER_TYPE => '/admin',
-        self::BLOGGER_USER_TYPE  => '/'
+        self::ADMIN_USER_TYPE   => '/admin',
+        self::BLOGGER_USER_TYPE => '/'
     ];
 
     const ALLOWED_WEB_ROUTES = [
-        self::ADMIN_USER_TYPE => [
+        self::ADMIN_USER_TYPE   => [
             'admin',
         ],
         self::BLOGGER_USER_TYPE => [
@@ -32,6 +32,16 @@ class UserConstants
         'name'     => 'required|string|min:5|max:100',
         'username' => 'required|alpha_num|min:5|max:50|unique:user',
         'password' => 'required|alpha_num|min:5|max:100',
+    ];
+
+    const UPDATE_USER_RULES = [
+        'name'     => 'bail|string|min:5|max:100',
+        'username' => 'bail|alpha_num|min:5|max:50|unique:user',
+        'password' => 'bail|alpha_num|min:5|max:100',
+    ];
+
+    const DELETE_USER_RULES = [
+        'id' => 'required|int|exists:user,id,deleted_at,NULL',
     ];
 
 }

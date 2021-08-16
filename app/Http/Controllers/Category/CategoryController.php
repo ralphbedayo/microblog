@@ -36,7 +36,7 @@ class CategoryController extends BaseController
 
     }
 
-    public function find()
+    public function show()
     {
 
     }

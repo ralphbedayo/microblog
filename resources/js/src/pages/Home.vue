@@ -15,7 +15,7 @@
 
                 <div class="row mt-5">
                     <search
-                        is_blog_home="true"
+                        :is_blog_home="true"
                         default_search_field="title"
                         default_order_value="created_at"
                         default_sort_value="desc"
