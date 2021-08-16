@@ -58,10 +58,12 @@
     import Category from "../models/Category";
     import Search from "../components/common/Search";
     import Pagination from "../components/common/Pagination";
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: "Home",
         components: {Pagination, Search, BlogItem, Navbar},
+        mixins: [AuthUserMixin],
         data() {
             return {
                 oUser: User,
@@ -112,22 +114,8 @@
                 }
             }
         },
-        async beforeCreate() {
-            // @todo refactor this block of code into mixin
-
-            if (store.state.authenticated === false) {
-                try {
-                    let oAuthUser = await User.getAuthUser();
-
-                    if (oAuthUser.user_type === ADMIN_USER_TYPE) {
-                        window.location.href = '/admin';
-                    }
-                } catch (e) {
-                    alert(SYSTEM_ERROR_MESSAGE);
-                }
-            }
-        },
         async beforeMount() {
+            this.oAuthUser = await this.getAuthUser();
             try {
                 this.oCategories = await Category.fetchAll();
             } catch (e) {

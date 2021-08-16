@@ -132,15 +132,16 @@
     import Blog from "../models/Blog";
     import Comment from "../models/Comment";
     import {maxLength, minLength, required} from "vuelidate/lib/validators";
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: "BlogPost",
         components: {Navbar},
+        mixins: [AuthUserMixin],
         data() {
             return {
                 iBlogId: this.$route.params.id,
                 oBlogItem: {},
-                oAuthUser: {},
                 sDateTimeFormat: DATE_TIME_FORMAT,
                 sCommentContent: '',
                 oEditState: {},
@@ -243,20 +244,8 @@
                 }
             }
         },
-        async beforeCreate() {
-            // @todo refactor this block of code into mixin
-
-            try {
-                this.oAuthUser = await User.getAuthUser();
-
-                if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
-                    window.location.href = '/admin';
-                }
-            } catch (e) {
-                alert(SYSTEM_ERROR_MESSAGE);
-            }
-        },
         async beforeMount() {
+            this.oAuthUser = await this.getAuthUser();
             try {
                 this.oBlogItem = await Blog.fetchById(this.iBlogId);
             } catch (e) {

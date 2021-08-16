@@ -79,14 +79,15 @@
     import Category from "../models/Category";
     import Blog from "../models/Blog";
     import {maxLength, minLength, required} from "vuelidate/lib/validators";
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: 'BlogWriter',
         components: {Navbar},
         props: ['is_create', 'id'],
+        mixins: [AuthUserMixin],
         data() {
             return {
-                oAuthUser: {},
                 oCategories: {},
                 sTitle: '',
                 sContent: '',
@@ -107,7 +108,6 @@
         },
         methods: {
             async submitBlog() {
-
                 this.$v.$touch();
                 if (this.$v.$invalid || this.bUsernameExists) {
                     return;
@@ -147,20 +147,9 @@
 
             }
         },
-        async beforeCreate() {
-            // @todo refactor this block of code into mixin
-
-            try {
-                this.oAuthUser = await User.getAuthUser();
-
-                if (this.oAuthUser.user_type === ADMIN_USER_TYPE) {
-                    window.location.href = '/admin';
-                }
-            } catch (e) {
-                alert(SYSTEM_ERROR_MESSAGE);
-            }
-        },
         async beforeMount() {
+            this.oAuthUser = await this.getAuthUser();
+
             try {
                 this.oCategories = await Category.fetchAll();
 

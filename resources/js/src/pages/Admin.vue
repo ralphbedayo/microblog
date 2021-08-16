@@ -75,10 +75,12 @@
     import Navbar from "../components/navbar/Navbar";
     import Search from "../components/common/Search";
     import Pagination from "../components/common/Pagination";
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: "Admin",
         components: {Pagination, Navbar, Search},
+        mixins:[AuthUserMixin],
         data() {
             return {
                 iLimit: 10,
@@ -98,7 +100,6 @@
                     'updated_at': 'Date Last Updated'
                 },
                 oSearchParams: {},
-                oAuthUser: {},
                 oUsers: {},
                 sDateTimeFormat: SHORT_DATE_TIME_FORMAT
             };
@@ -143,19 +144,8 @@
                 this.search();
             }
         },
-
-        async beforeCreate() {
-            // @todo refactor this block of code into mixin
-
-            try {
-                this.oAuthUser = await User.getAuthUser();
-
-                if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
-                    window.location.href = '/';
-                }
-            } catch (e) {
-                alert(SYSTEM_ERROR_MESSAGE);
-            }
+        async beforeMount() {
+            this.oAuthUser = await this.getAuthUser(true);
         },
     }
 </script>

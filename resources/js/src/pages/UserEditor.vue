@@ -94,11 +94,13 @@
     import Navbar from "../components/navbar/Navbar";
     import User from "../models/User";
     import {required, minLength, maxLength, alphaNum, } from 'vuelidate/lib/validators';
+    import {AuthUserMixin} from "../mixins/AuthUserMixin";
 
     export default {
         name: 'UserEditor',
         components: {Navbar},
         props: ['is_create', 'id'],
+        mixins: [AuthUserMixin],
         data() {
 
             return {
@@ -189,20 +191,9 @@
                 }
             }
         },
-        async beforeCreate() {
-            // @todo refactor this block of code into mixin
+        async beforeMount() {
+            this.oAuthUser = await this.getAuthUser(true);
 
-            try {
-                this.oAuthUser = await User.getAuthUser();
-
-                if (this.oAuthUser.user_type !== ADMIN_USER_TYPE) {
-                    window.location.href = '/';
-                }
-            } catch (e) {
-                alert(SYSTEM_ERROR_MESSAGE);
-            }
-        },
-        beforeMount() {
             if (this.is_create === false) {
                 this.setUserData();
             }
