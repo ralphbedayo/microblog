@@ -10,7 +10,8 @@
             <div class="row mt-5 blog-section">
                 <div class="row mb-3">
                     <h1> {{ this.oBlogItem.title}} </h1>
-                    <span class="fst-italic">{{ this.oBlogItem.author_name}}</span> <br>
+                    <p class="fst-italic">{{ this.oBlogItem.author_name}}</p>
+                    <span class="small text-secondary">Category: {{ _.upperFirst(this.oBlogItem.category)}}</span> <br>
                     <span class="small text-secondary">Created: {{ moment(this.oBlogItem.created_at).format(sDateTimeFormat)}}</span>
                     <br>
                     <span class="small text-secondary">Last Updated: {{ moment(this.oBlogItem.updated_at).format(sDateTimeFormat)}}</span>
