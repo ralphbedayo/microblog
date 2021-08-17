@@ -1,5 +1,6 @@
 import {Model} from "@vuex-orm/core";
 import {ORDER_FIELD_CONVERSION} from "../constants/common";
+import {sortCaseInsensitive} from "../lib/utils";
 
 export default class Blog extends Model {
     static entity = 'blog';
@@ -39,7 +40,12 @@ export default class Blog extends Model {
 
         oParams.orderBy = this.convertOrderByField(oParams.orderBy);
 
-        return {data: this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
+        let oBlogItems = this.query().orderBy(oParams.orderBy, oParams.sortedBy).all();
+
+        // Repeating sorting due to Vuex ORM issue https://github.com/vuex-orm/vuex-orm/issues/702
+        let oSortedData = sortCaseInsensitive(oBlogItems, oParams.orderBy, oParams.sortedBy);
+
+        return {data: oSortedData, meta: oResult.response.data.meta};
     }
 
 
