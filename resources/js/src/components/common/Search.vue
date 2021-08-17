@@ -168,7 +168,9 @@
                     }
                 }
 
-                return 'category_id:' + sCategoryIdSearch.slice(0, -1);
+                sCategoryIdSearch = sCategoryIdSearch.length === 0 ? 0 : sCategoryIdSearch.slice(0, -1);
+
+                return 'category_id:' + sCategoryIdSearch;
             },
         },
         beforeMount() {
