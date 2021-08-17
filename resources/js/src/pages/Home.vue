@@ -1,6 +1,6 @@
 <template>
     <div>
-        <navbar></navbar>
+        <navbar :auth_user="this.oAuthUser"></navbar>
         <div class="container">
             <div style="padding-top: 100px">
                 <div class="row">

@@ -62,6 +62,7 @@ class AuthenticationController extends BaseController
     public function register()
     {
         $aFormData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
+        $aFormData['user_type'] = UserConstants::BLOGGER_USER_TYPE;
 
         $oUserData = $this->oUserService->createUser($aFormData);
 

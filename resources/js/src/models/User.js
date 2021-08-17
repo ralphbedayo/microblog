@@ -1,5 +1,6 @@
 import {Model} from "@vuex-orm/core";
 import {ORDER_FIELD_CONVERSION} from "../constants/common";
+import {sortCaseInsensitive} from "../lib/utils";
 
 
 export default class User extends Model {
@@ -56,7 +57,13 @@ export default class User extends Model {
 
         oParams.orderBy = ORDER_FIELD_CONVERSION[oParams.orderBy] ?? oParams.orderBy;
 
-        return {data: this.query().orderBy(oParams.orderBy, oParams.sortedBy).all(), meta: oResult.response.data.meta};
+        let oUsers = this.query().orderBy(oParams.orderBy, oParams.sortedBy).all();
+
+
+        // Repeating sorting due to Vuex ORM issue https://github.com/vuex-orm/vuex-orm/issues/702
+        let oSortedData =  sortCaseInsensitive(oUsers, oParams.orderBy, oParams.sortedBy);
+
+        return {data: oSortedData, meta: oResult.response.data.meta};
     }
 
     static async fetchById(iId, oParams = {}) {
