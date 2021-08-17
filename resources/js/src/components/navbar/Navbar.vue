@@ -7,7 +7,8 @@
                         Blog Spotter
                     </span>
                 </router-link>
-                <a href="/logout" class="btn btn-outline-light ms-auto">
+                <span class="text-white ms-auto me-5"> Hi, <strong> {{ this.auth_user.name}}</strong>  </span>
+                <a href="/logout" class="btn btn-outline-light">
                     Logout
                 </a>
             </div>
@@ -17,8 +18,8 @@
 <script>
     export default {
         name: "Navbar",
-        methods: {
-        }
+        props: ['auth_user'],
+        methods: {}
     };
 
 </script>

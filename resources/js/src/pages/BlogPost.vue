@@ -1,6 +1,6 @@
 <template>
     <div>
-        <navbar></navbar>
+        <navbar :auth_user="this.oAuthUser"></navbar>
         <div class="container pb-5" style="padding-top: 100px">
             <div class="row navigation-section">
                 <div class="d-flex justify-content-end">
