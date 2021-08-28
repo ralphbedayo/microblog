@@ -121,6 +121,7 @@
                 };
 
 
+                this.$isLoading(true);
                 try {
                     let oResponse = this.is_create ? await Blog.createBlog(oBlogData) : await Blog.updateBlog(this.id, oBlogData);
 
@@ -132,9 +133,11 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             },
             async setBlogData() {
 
+                this.$isLoading(true);
                 try {
                     let oBlogItem = await Blog.fetchById(this.id);
 
@@ -145,20 +148,23 @@
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
 
+                this.$isLoading(false);
             }
         },
         async beforeMount() {
+            this.$isLoading(true);
             this.oAuthUser = await this.getAuthUser();
 
             try {
                 this.oCategories = await Category.fetchAll();
 
                 if (this.is_create === false) {
-                    this.setBlogData();
+                    await this.setBlogData();
                 }
             } catch (e) {
                 alert(SYSTEM_ERROR_MESSAGE);
             }
+            this.$isLoading(false);
         }
     }
 

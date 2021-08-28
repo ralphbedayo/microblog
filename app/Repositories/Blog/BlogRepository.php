@@ -25,4 +25,6 @@ class BlogRepository extends BaseRepository
     {
         return Blog::class;
     }
+
+    // custom function()
 }

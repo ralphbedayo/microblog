@@ -172,9 +172,6 @@
 
                 return 'category_id:' + sCategoryIdSearch;
             },
-        },
-        beforeMount() {
-            this.emitSearch();
         }
     };
 

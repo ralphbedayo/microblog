@@ -101,6 +101,7 @@
         },
         methods: {
             async search() {
+                this.$isLoading(true);
                 let oPagination = {page: this.iPage, limit: this.iLimit};
                 let oSearchParams = this.oSearchParams;
 
@@ -112,15 +113,19 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+
+                this.$isLoading(false);
             }
         },
         async beforeMount() {
+            this.$isLoading(true);
             this.oAuthUser = await this.getAuthUser();
             try {
                 this.oCategories = await Category.fetchAll();
             } catch (e) {
                 alert(SYSTEM_ERROR_MESSAGE);
             }
+            this.search();
         }
     }
 </script>
