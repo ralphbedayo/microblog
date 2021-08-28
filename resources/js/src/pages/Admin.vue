@@ -107,6 +107,7 @@
         },
         methods: {
             async search() {
+                this.$isLoading(true);
                 let oPagination = {page: this.iPage, limit: this.iLimit};
                 let oSearchParams = this.oSearchParams;
 
@@ -118,12 +119,14 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             },
             async deleteUser(iId) {
                 if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
                     return;
                 }
 
+                this.$isLoading(true);
                 try {
                     let iResponseCode = await User.deleteUser(iId);
 
@@ -133,7 +136,7 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
-
+                this.$isLoading(false);
             }
         },
         watch: {
@@ -145,7 +148,9 @@
             }
         },
         async beforeMount() {
+            this.$isLoading(true);
             this.oAuthUser = await this.getAuthUser(true);
+            this.search();
         },
     }
 </script>

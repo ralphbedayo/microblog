@@ -120,9 +120,7 @@
 </template>
 <script>
 
-    import User from "../models/User";
     import {
-        ADMIN_USER_TYPE,
         DATE_TIME_FORMAT,
         DELETE_RESOURCE_CONFIRM_MESSAGE,
         OK_STATUS,
@@ -173,6 +171,7 @@
                     content: this.sCommentContent
                 };
 
+                this.$isLoading(true);
                 try {
                     let iResponseCode = await Comment.createComment(oData);
 
@@ -183,12 +182,14 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             },
             async deleteComment(iId) {
                 if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
                     return;
                 }
 
+                this.$isLoading(true);
                 try {
                     let iResponseCode = await Comment.deleteComment(iId);
 
@@ -199,6 +200,7 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             },
             startEdit(iId, sContent) {
                 this.sEditCommentContent = sContent;
@@ -216,6 +218,7 @@
                     return;
                 }
 
+                this.$isLoading(true);
                 try {
                     let iResponseCode = await Comment.updateComment(iId, {content: this.sEditCommentContent});
 
@@ -226,6 +229,7 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             },
             async deleteBlog() {
                 if (confirm(DELETE_RESOURCE_CONFIRM_MESSAGE) === false) {
@@ -233,6 +237,7 @@
                 }
 
 
+                this.$isLoading(true);
                 try {
                     let iResponseCode = await Blog.deleteBlog(this.oBlogItem.id);
 
@@ -242,15 +247,18 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             }
         },
         async beforeMount() {
+            this.$isLoading(true);
             this.oAuthUser = await this.getAuthUser();
             try {
                 this.oBlogItem = await Blog.fetchById(this.iBlogId);
             } catch (e) {
                 alert(SYSTEM_ERROR_MESSAGE);
             }
+            this.$isLoading(false);
         }
     }
 </script>

@@ -54,14 +54,17 @@
                         </div>
                     </div>
                     <div class="row" v-if="is_blog_home">
+                        <div class="row mb-2"><strong>Categories: </strong></div>
                         <div class="row">
                             <div class="col-2">
-                                <div class="row mb-2">
-                                    <strong>Categories: </strong>
-                                </div>
                                 <div class="row px-2 mb-2">
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                    <button type="button" class="btn btn-sm btn-primary"
                                             v-on:click="checkAllCategory">Check All
+                                    </button>
+                                </div>
+                                <div class="row px-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            v-on:click="checkAllCategory(false)">Uncheck All
                                     </button>
                                 </div>
                             </div>
@@ -145,9 +148,9 @@
 
                 this.$emit('input', oSearchValues);
             },
-            checkAllCategory() {
+            checkAllCategory(bIsChecked = true) {
                 for (const [mKey, oCategory] of Object.entries(this.categories)) {
-                    this.oCategoriesCheckedValue[oCategory.id] = true;
+                    this.oCategoriesCheckedValue[oCategory.id] = bIsChecked;
                 }
             },
             setSearchFieldParam() {
@@ -172,9 +175,6 @@
 
                 return 'category_id:' + sCategoryIdSearch;
             },
-        },
-        beforeMount() {
-            this.emitSearch();
         }
     };
 

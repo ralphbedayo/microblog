@@ -153,6 +153,8 @@
                     'user_type': this.sUserType,
                 };
 
+                this.$isLoading(true);
+
                 try {
                     let oResponse = this.is_create ? await User.createUser(oUserData) : await User.updateUser(this.id, oUserData);
 
@@ -162,8 +164,11 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+
+                this.$isLoading(false);
             },
             async setUserData() {
+                this.$isLoading(true);
                 try {
                     let oUserData = await User.fetchById(this.id);
 
@@ -175,8 +180,10 @@
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
 
+                this.$isLoading(false);
             },
             async checkUsernameExists() {
+                this.$isLoading(true);
                 let oSearchParams = {
                     search: 'username:' + this.sUsername,
                     searchFields: 'username:='
@@ -189,9 +196,11 @@
                 } catch (e) {
                     alert(SYSTEM_ERROR_MESSAGE);
                 }
+                this.$isLoading(false);
             }
         },
         async beforeMount() {
+            this.$isLoading(true);
             this.oAuthUser = await this.getAuthUser(true);
 
             if (this.is_create === false) {

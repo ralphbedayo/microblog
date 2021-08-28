@@ -36,6 +36,7 @@
         "moment-timezone": "^0.5.33",
         "vue": "^2.6.14",
         "vue-router": "^3.5.2",
+        "vuejs-loading-screen": "^1.10.0",
         "vuelidate": "^0.7.6",
         "vuex": "^3.6.2"
     }
