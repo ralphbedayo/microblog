@@ -11,11 +11,9 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryService extends BaseService
 {
-    protected $oCategoryRepository;
 
-    public function __construct(CategoryRepository $oCategoryRepository)
+    public function __construct(protected CategoryRepository $categoryRepository)
     {
-        $this->oCategoryRepository = $oCategoryRepository;
     }
 
 
@@ -28,7 +26,7 @@ class CategoryService extends BaseService
     public function getAllCategory()
     {
         try {
-            return $this->oCategoryRepository->all();
+            return $this->categoryRepository->all();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new ResourceNotFoundException();

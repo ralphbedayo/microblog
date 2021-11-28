@@ -11,11 +11,9 @@ use App\Transformers\CategoryTransformer;
 
 class CategoryController extends BaseController
 {
-    protected $oCategoryService;
 
-    public function __construct(CategoryService $oCategoryService)
+    public function __construct(protected CategoryService $categoryService)
     {
-        $this->oCategoryService = $oCategoryService;
     }
 
 
@@ -25,9 +23,9 @@ class CategoryController extends BaseController
      */
     public function index()
     {
-        $oResponseData = $this->oCategoryService->getAllCategory();
+        $response = $this->categoryService->getAllCategory();
 
-        return $this->transform($oResponseData, CategoryTransformer::class);
+        return $this->transform($response, CategoryTransformer::class);
     }
 
 

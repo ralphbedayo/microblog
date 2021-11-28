@@ -25,14 +25,8 @@ class AuthenticationController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $oUserService;
-
-    protected $oUserTransformer;
-
-    public function __construct(UserService $oUserService, UserTransformer $oUserTransformer)
+    public function __construct(protected UserService $userService, protected UserTransformer $userTransformer)
     {
-        $this->oUserService = $oUserService;
-        $this->oUserTransformer = $oUserTransformer;
     }
 
     public function view()
@@ -61,13 +55,13 @@ class AuthenticationController extends BaseController
      */
     public function register()
     {
-        $aFormData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
-        $aFormData['user_type'] = UserConstants::BLOGGER_USER_TYPE;
+        $requestData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
+        $requestData['user_type'] = UserConstants::BLOGGER_USER_TYPE;
 
-        $oUserData = $this->oUserService->createUser($aFormData);
+        $userData = $this->userService->createUser($requestData);
 
-        if (empty($oUserData) === false) {
-            Auth::login($oUserData);
+        if (empty($userData) === false) {
+            Auth::login($userData);
 
             request()->session()->regenerate();
 
@@ -85,9 +79,9 @@ class AuthenticationController extends BaseController
      */
     public function login()
     {
-        $aCredentials = $this->validate(request(), AuthenticationConstants::LOGIN_PARAMS);
+        $credentials = $this->validate(request(), AuthenticationConstants::LOGIN_PARAMS);
 
-        if (Auth::attempt($aCredentials) === true) {
+        if (Auth::attempt($credentials) === true) {
             request()->session()->regenerate();
 
             return redirect(UserConstants::HOME_URL[Auth::user()->user_type]);

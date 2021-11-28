@@ -52,12 +52,12 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::deleting(function ($oUser) {
-            $oUser->blogs()->each(function ($oBlog) {
-                $oBlog->delete();
+        static::deleting(function ($user) {
+            $user->blogs()->each(function ($blog) {
+                $blog->delete();
             });
-            $oUser->blogs()->delete();
-            $oUser->comments()->delete();
+            $user->blogs()->delete();
+            $user->comments()->delete();
             return true;
         });
     }

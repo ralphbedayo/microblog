@@ -19,27 +19,27 @@ class CommentTransformer extends TransformerAbstract
     ];
 
     /**
-     * @param Comment $oCommentModel
+     * @param Comment $commentModel
      * @return array
      */
-    public function transform($oCommentModel)
+    public function transform($commentModel)
     {
 
         return [
-            'id'         => $oCommentModel->id,
-            'content'    => $oCommentModel->content,
-            'created_at' => $oCommentModel->created_at,
-            'updated_at' => $oCommentModel->updated_at
+            'id'         => $commentModel->id,
+            'content'    => $commentModel->content,
+            'created_at' => $commentModel->created_at,
+            'updated_at' => $commentModel->updated_at
         ];
     }
 
-    public function includeCommentAuthor(Comment $oCommentModel)
+    public function includeCommentAuthor(Comment $commentModel)
     {
-        return new Primitive($oCommentModel->commentAuthor);
+        return new Primitive($commentModel->commentAuthor);
     }
 
-    public function includeBlog(Comment $oCommentModel)
+    public function includeBlog(Comment $commentModel)
     {
-        return new Primitive($oCommentModel->blog);
+        return new Primitive($commentModel->blog);
     }
 }

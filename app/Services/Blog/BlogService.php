@@ -13,11 +13,9 @@ use Illuminate\Support\Facades\Log;
 
 class BlogService extends BaseService
 {
-    protected $oBlogRepository;
 
-    public function __construct(BlogRepository $oBlogRepository)
+    public function __construct(protected BlogRepository $blogRepository)
     {
-        $this->oBlogRepository = $oBlogRepository;
     }
 
 
@@ -30,7 +28,7 @@ class BlogService extends BaseService
     public function getAllBlog()
     {
         try {
-            return $this->oBlogRepository->paginate();
+            return $this->blogRepository->paginate();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new ResourceNotFoundException();
@@ -38,14 +36,14 @@ class BlogService extends BaseService
     }
 
     /**
-     * @param $iId
+     * @param $id
      * @return mixed
      * @throws ResourceNotFoundException
      */
-    public function findBlogById($iId)
+    public function findBlogById($id)
     {
         try {
-            return $this->oBlogRepository->find($iId);
+            return $this->blogRepository->find($id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new ResourceNotFoundException();
@@ -53,14 +51,14 @@ class BlogService extends BaseService
     }
 
     /**
-     * @param array $aData
+     * @param array $requestData
      * @return mixed
      * @throws CreateResourceException
      */
-    public function createBlog(array $aData)
+    public function createBlog(array $requestData)
     {
         try {
-            return $this->oBlogRepository->create($aData);
+            return $this->blogRepository->create($requestData);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new CreateResourceException();
@@ -68,25 +66,30 @@ class BlogService extends BaseService
     }
 
     /**
-     * @param $iId
-     * @param $aData
+     * @param $id
+     * @param array $requestData
      * @return mixed
      * @throws UpdateResourceException
      */
-    public function updateBlog($iId, array $aData)
+    public function updateBlog($id, array $requestData)
     {
         try {
-            return $this->oBlogRepository->update($aData, $iId);
+            return $this->blogRepository->update($requestData, $id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();
         }
     }
 
-    public function deleteBlog($iId)
+    /**
+     * @param $id
+     * @return int
+     * @throws UpdateResourceException
+     */
+    public function deleteBlog($id)
     {
         try {
-            return $this->oBlogRepository->delete($iId);
+            return $this->blogRepository->delete($id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();

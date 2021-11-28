@@ -11,15 +11,15 @@ class CategoryTransformer extends TransformerAbstract
 {
 
     /**
-     * @param Category $oCategoryModel
+     * @param Category $categoryModel
      * @return array
      */
-    public function transform($oCategoryModel)
+    public function transform($categoryModel)
     {
 
         return [
-            'id'    => $oCategoryModel->id,
-            'title' => $oCategoryModel->title,
+            'id'    => $categoryModel->id,
+            'title' => $categoryModel->title,
         ];
     }
 

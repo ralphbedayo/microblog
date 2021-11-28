@@ -18,11 +18,9 @@ use Illuminate\Validation\ValidationException;
 
 class BlogController extends BaseController
 {
-    protected $oBlogService;
 
-    public function __construct(BlogService $oBlogService)
+    public function __construct(protected BlogService $blogService)
     {
-        $this->oBlogService = $oBlogService;
     }
 
     /**
@@ -33,23 +31,23 @@ class BlogController extends BaseController
      */
     public function index()
     {
-        $oResponseData = $this->oBlogService->getAllBlog();
+        $response = $this->blogService->getAllBlog();
 
-        return $this->transform($oResponseData, BlogTransformer::class);
+        return $this->transform($response, BlogTransformer::class);
     }
 
     /**
      * Display specified resource
      *
-     * @param string $iId
+     * @param string $id
      * @return array
      * @throws ResourceNotFoundException
      */
-    public function show($iId)
+    public function show($id)
     {
-        $oResponseData = $this->oBlogService->findBlogById($iId);
+        $response = $this->blogService->findBlogById($id);
 
-        return $this->transform($oResponseData, BlogTransformer::class);
+        return $this->transform($response, BlogTransformer::class);
     }
 
 
@@ -64,45 +62,45 @@ class BlogController extends BaseController
      */
     public function store()
     {
-        $aBlogData = $this->validate(request(), BlogConstants::SAVE_BLOG_RULES);
+        $blogData = $this->validate(request(), BlogConstants::SAVE_BLOG_RULES);
 
-        $oResponseData = $this->oBlogService->createBlog($aBlogData);
+        $response = $this->blogService->createBlog($blogData);
 
-        return $this->transform($oResponseData, BlogTransformer::class);
+        return $this->transform($response, BlogTransformer::class);
     }
 
     /**
      * Update Resource
      *
-     * @param $iId
+     * @param $id
      * @return array
      * @throws ValidationException
      * @throws UpdateResourceException
      * @throws ResourceNotFoundException
      */
-    public function update($iId)
+    public function update($id)
     {
-        $aBlogUpdateData = $this->validate(request()->merge(['id' => $iId]), BlogConstants::UPDATE_BLOG_RULES);
+        $blogData = $this->validate(request()->merge(['id' => $id]), BlogConstants::UPDATE_BLOG_RULES);
 
-        $oResponseData = $this->oBlogService->updateBlog($iId, $aBlogUpdateData);
+        $response = $this->blogService->updateBlog($id, $blogData);
 
-        return $this->transform($oResponseData, BlogTransformer::class);
+        return $this->transform($response, BlogTransformer::class);
     }
 
 
     /**
      * Delete Resource
      *
-     * @param $iId
+     * @param $id
      * @return JsonResponse
      * @throws UpdateResourceException
      * @throws ValidationException
      */
-    public function destroy($iId)
+    public function destroy($id)
     {
-        $this->validate(request()->merge(['id' => $iId]), BlogConstants::DELETE_BLOG_RULES);
+        $this->validate(request()->merge(['id' => $id]), BlogConstants::DELETE_BLOG_RULES);
 
-        $this->oBlogService->deleteBlog($iId);
+        $this->blogService->deleteBlog($id);
 
         return $this->accepted([
             'Deleted Blog successfully.'
