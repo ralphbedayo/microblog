@@ -15,26 +15,24 @@ use Illuminate\Support\Str;
 
 class UserService extends BaseService
 {
-    protected $oUserRepository;
 
-    public function __construct(UserRepository $oRepository)
+    public function __construct(protected UserRepository $userRepository)
     {
-        $this->oUserRepository = $oRepository;
     }
 
 
     /**
-     * @param array $aData
+     * @param array $requestData
      * @return mixed
      * @throws CreateResourceException
      */
-    public function createUser(array $aData)
+    public function createUser(array $requestData)
     {
-        $aData['password'] = Hash::make($aData['password']);
-        $aData['api_token'] = Str::random(32);
+        $requestData['password'] = Hash::make($requestData['password']);
+        $requestData['api_token'] = Str::random(32);
 
         try {
-            return $this->oUserRepository->create($aData);
+            return $this->userRepository->create($requestData);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new CreateResourceException();
@@ -48,7 +46,7 @@ class UserService extends BaseService
     public function getAllUsers()
     {
         try {
-            return $this->oUserRepository->paginate();
+            return $this->userRepository->paginate();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new ResourceNotFoundException();
@@ -56,14 +54,14 @@ class UserService extends BaseService
     }
 
     /**
-     * @param $iId
+     * @param $id
      * @return mixed
      * @throws ResourceNotFoundException
      */
-    public function findUser($iId)
+    public function findUser($id)
     {
         try {
-            return $this->oUserRepository->find($iId);
+            return $this->userRepository->find($id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new ResourceNotFoundException();
@@ -71,15 +69,15 @@ class UserService extends BaseService
     }
 
     /**
-     * @param $iId
-     * @param $aData
+     * @param $id
+     * @param $requestData
      * @return mixed
      * @throws UpdateResourceException
      */
-    public function updateUser($iId, $aData)
+    public function updateUser($id, $requestData)
     {
         try {
-            return $this->oUserRepository->update($aData, $iId);
+            return $this->userRepository->update($requestData, $id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();
@@ -87,14 +85,14 @@ class UserService extends BaseService
     }
 
     /**
-     * @param $iId
+     * @param $id
      * @return int
      * @throws UpdateResourceException
      */
-    public function deleteUser($iId)
+    public function deleteUser($id)
     {
         try {
-            return $this->oUserRepository->delete($iId);
+            return $this->userRepository->delete($id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();

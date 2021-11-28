@@ -15,18 +15,18 @@ class UserTransformer extends TransformerAbstract
 {
 
     /**
-     * @param User|Authenticatable $oUserModel
+     * @param User|Authenticatable $userModel
      * @return array
      */
-    public function transform($oUserModel)
+    public function transform($userModel)
     {
         return [
-            'id'         => $oUserModel->id,
-            'username'   => $oUserModel->username,
-            'user_type'  => $oUserModel->user_type,
-            'name'       => $oUserModel->name,
-            'created_at' => $oUserModel->created_at,
-            'updated_at' => $oUserModel->updated_at
+            'id'         => $userModel->id,
+            'username'   => $userModel->username,
+            'user_type'  => $userModel->user_type,
+            'name'       => $userModel->name,
+            'created_at' => $userModel->created_at,
+            'updated_at' => $userModel->updated_at
         ];
     }
 }

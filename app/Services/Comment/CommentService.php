@@ -12,22 +12,20 @@ use Illuminate\Support\Facades\Log;
 
 class CommentService extends BaseService
 {
-    protected $oCommentRepository;
 
-    public function __construct(CommentRepository $oCommentRepository)
+    public function __construct(protected CommentRepository $commentRepository)
     {
-        $this->oCommentRepository = $oCommentRepository;
     }
 
     /**
-     * @param array $aData
+     * @param array $requestData
      * @return mixed
      * @throws CreateResourceException
      */
-    public function createComment(array $aData)
+    public function createComment(array $requestData)
     {
         try {
-            return $this->oCommentRepository->create($aData);
+            return $this->commentRepository->create($requestData);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new CreateResourceException();
@@ -35,25 +33,30 @@ class CommentService extends BaseService
     }
 
     /**
-     * @param $iId
-     * @param array $aData
+     * @param $id
+     * @param array $requestData
      * @return mixed
      * @throws UpdateResourceException
      */
-    public function updateComment($iId, array $aData)
+    public function updateComment($id, array $requestData)
     {
         try {
-            return $this->oCommentRepository->update($aData, $iId);
+            return $this->commentRepository->update($requestData, $id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();
         }
     }
 
-    public function deleteComment($iId)
+    /**
+     * @param $id
+     * @return int
+     * @throws UpdateResourceException
+     */
+    public function deleteComment($id)
     {
         try {
-            return $this->oCommentRepository->delete($iId);
+            return $this->commentRepository->delete($id);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new UpdateResourceException();

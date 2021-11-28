@@ -16,11 +16,8 @@ use Illuminate\Validation\ValidationException;
 
 class CommentController extends BaseController
 {
-    protected $oCommentService;
-
-    public function __construct(CommentService $oCommentService)
+    public function __construct(protected CommentService $commentService)
     {
-        $this->oCommentService = $oCommentService;
     }
 
     /**
@@ -31,42 +28,42 @@ class CommentController extends BaseController
      */
     public function store()
     {
-        $aCommentData = $this->validate(request(), CommentConstants::SAVE_COMMENT_RULES);
+        $requestData = $this->validate(request(), CommentConstants::SAVE_COMMENT_RULES);
 
-        $oResponseData = $this->oCommentService->createComment($aCommentData);
+        $response = $this->commentService->createComment($requestData);
 
-        return $this->transform($oResponseData, CommentTransformer::class);
+        return $this->transform($response, CommentTransformer::class);
     }
 
     /**
-     * @param $iId
+     * @param $id
      * @return array
      * @throws ResourceNotFoundException
      * @throws ValidationException
      * @throws UpdateResourceException
      */
-    public function update($iId)
+    public function update($id)
     {
-        $aCommentData = $this->validate(request()->merge(['id' => $iId]), CommentConstants::UPDATE_COMMENT_RULES);
+        $requestData = $this->validate(request()->merge(['id' => $id]), CommentConstants::UPDATE_COMMENT_RULES);
 
-        $oResponseData = $this->oCommentService->updateComment($iId, $aCommentData);
+        $response = $this->commentService->updateComment($id, $requestData);
 
-        return $this->transform($oResponseData, CommentTransformer::class);
+        return $this->transform($response, CommentTransformer::class);
 
     }
 
 
     /**
-     * @param $iId
+     * @param $id
      * @return JsonResponse
      * @throws UpdateResourceException
      * @throws ValidationException
      */
-    public function destroy($iId)
+    public function destroy($id)
     {
-        $this->validate(request()->merge(['id' => $iId]), CommentConstants::DELETE_COMMENT_RULES);
+        $this->validate(request()->merge(['id' => $id]), CommentConstants::DELETE_COMMENT_RULES);
 
-        $this->oCommentService->deleteComment($iId);
+        $this->commentService->deleteComment($id);
 
         return $this->accepted([
             'Deleted Comment successfully.'
@@ -78,7 +75,7 @@ class CommentController extends BaseController
 
     }
 
-    public function show($iId)
+    public function show($id)
     {
 
     }

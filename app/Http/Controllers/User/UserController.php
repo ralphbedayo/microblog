@@ -20,14 +20,10 @@ class UserController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    protected $oUserService;
-
-    protected $oUserTransformer;
-
-    public function __construct(UserService $oUserService, UserTransformer $oUserTransformer)
+    public function __construct(
+        protected UserService     $userService,
+        protected UserTransformer $userTransformer)
     {
-        $this->oUserService = $oUserService;
-        $this->oUserTransformer = $oUserTransformer;
     }
 
     /**
@@ -37,62 +33,62 @@ class UserController extends BaseController
      */
     public function store()
     {
-        $aFormData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
+        $requestData = $this->validate(request(), UserConstants::SAVE_USER_RULES);
 
-        $oUserData = $this->oUserService->createUser($aFormData);
+        $userData = $this->userService->createUser($requestData);
 
-        return $this->oUserTransformer->transform($oUserData);
+        return $this->userTransformer->transform($userData);
     }
 
     /**
      * @return array
      * @throws ResourceNotFoundException
      */
-     public function index()
-     {
-         $oResponseData = $this->oUserService->getAllUsers();
-
-         return $this->transform($oResponseData, UserTransformer::class);
-     }
-
-    /**
-     * @param $iId
-     * @return array
-     * @throws ResourceNotFoundException
-     */
-    public function show($iId)
+    public function index()
     {
-        $oResponseData = $this->oUserService->findUser($iId);
+        $response = $this->userService->getAllUsers();
 
-        return $this->transform($oResponseData, UserTransformer::class);
+        return $this->transform($response, UserTransformer::class);
     }
 
     /**
-     * @param $iId
+     * @param $id
+     * @return array
+     * @throws ResourceNotFoundException
+     */
+    public function show($id)
+    {
+        $response = $this->userService->findUser($id);
+
+        return $this->transform($response, UserTransformer::class);
+    }
+
+    /**
+     * @param $id
      * @return array
      * @throws ValidationException
      * @throws UpdateResourceException
      */
-    public function update($iId)
+    public function update($id)
     {
-        $aFormData = $this->validate(request()->merge(['id' => $iId]), UserConstants::UPDATE_USER_RULES);
+        $requestData = $this->validate(request()->merge(['id' => $id]), UserConstants::UPDATE_USER_RULES);
 
-        $oUserData = $this->oUserService->updateUser($iId, $aFormData);
+        $userData = $this->userService->updateUser($id, $requestData);
 
-        return $this->oUserTransformer->transform($oUserData);
+        return $this->userTransformer->transform($userData);
     }
 
     /**
-     * @param $iId
+     * @param $id
      * @return JsonResponse
      * @throws UpdateResourceException
      * @throws ValidationException
      */
-    public function destroy($iId)
+    public function destroy($id)
     {
-        $this->validate(request()->merge(['id' => $iId]), UserConstants::DELETE_USER_RULES);
+        $this->validate(request()->merge(['id' => $id]), UserConstants::DELETE_USER_RULES);
 
-        $this->oUserService->deleteUser($iId);
+        $this->userService->deleteUser($id);
 
         return $this->accepted([
             'Deleted User successfully.'

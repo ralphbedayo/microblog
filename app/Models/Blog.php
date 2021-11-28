@@ -45,8 +45,8 @@ class Blog extends Model
     {
         parent::boot();
 
-        static::deleting(function ($oBlog) {
-            $oBlog->comments()->delete();
+        static::deleting(function ($blog) {
+            $blog->comments()->delete();
 
             return true;
         });

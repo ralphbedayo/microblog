@@ -17,10 +17,10 @@ use Spatie\Fractal\Fractal;
 class BlogTransformer extends TransformerAbstract
 {
     /** @var UserTransformer */
-    protected $oUserTransformer;
+    protected $userTransformer;
 
     /** @var CommentTransformer */
-    protected $oCommentTransformer;
+    protected $commentTransformer;
 
 
     protected $availableIncludes = [
@@ -33,36 +33,36 @@ class BlogTransformer extends TransformerAbstract
 
 
     /**
-     * @param Blog $oBlogModel
+     * @param Blog $blog
      * @return array
      */
-    public function transform($oBlogModel)
+    public function transform($blog)
     {
-        $this->oUserTransformer = new UserTransformer();
-        $this->oCommentTransformer = new CommentTransformer();
+        $this->userTransformer = new UserTransformer();
+        $this->commentTransformer = new CommentTransformer();
 
         return [
-            'id'          => $oBlogModel->id,
-            'title'       => $oBlogModel->title,
-            'content'     => $oBlogModel->content,
-            'category_id' => $oBlogModel->category_id,
-            'category'    => $oBlogModel->category->title,
-            'author_id'   => $oBlogModel->author_id,
-            'author_name' => $oBlogModel->author->name,
-            'created_at'  => $oBlogModel->created_at,
-            'updated_at'  => $oBlogModel->updated_at
+            'id'          => $blog->id,
+            'title'       => $blog->title,
+            'content'     => $blog->content,
+            'category_id' => $blog->category_id,
+            'category'    => $blog->category->title,
+            'author_id'   => $blog->author_id,
+            'author_name' => $blog->author->name,
+            'created_at'  => $blog->created_at,
+            'updated_at'  => $blog->updated_at
         ];
     }
 
 
-    public function includeAuthor(Blog $oBlogModel)
+    public function includeAuthor(Blog $blog)
     {
-        return new Primitive($oBlogModel->author);
+        return new Primitive($blog->author);
     }
 
-    public function includeComments(Blog $oBlogModel)
+    public function includeComments(Blog $blog)
     {
-        $comments = Fractal::create($oBlogModel->comments, CommentTransformer::class);
+        $comments = Fractal::create($blog->comments, CommentTransformer::class);
 
         return new Primitive($comments->toArray()['data']);
     }
